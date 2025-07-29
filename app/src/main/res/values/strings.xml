@@ -2,4 +2,7 @@
     <string name="app_name">OBSS Movies</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="image_poster">image poster</string>
+    <string name="movie_title">Movie Title</string>
+    <string name="section_title">Section Title</string>
 </resources>

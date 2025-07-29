@@ -1,6 +1,8 @@
 package com.ipekkochisarli.obssmovies.features.movie.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
+import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
+import com.ipekkochisarli.obssmovies.util.Constants
 
 data class MovieResponse(
 
@@ -61,3 +63,23 @@ data class MovieResultsItem(
     @SerializedName("vote_count")
     val voteCount: Int? = null
 )
+
+fun MovieResultsItem.toDomain(): MovieUiModel? {
+    val id = this.id ?: return null
+    val title = this.title.orEmpty()
+    val posterUrl = if (!posterPath.isNullOrBlank()) {
+        "${Constants.TMDB_IMAGE_BASE_URL}$posterPath"
+    } else {
+        ""
+    }
+    val releaseYear = this.releaseDate?.take(4).orEmpty()
+    val voteAvg = voteAverage.toString()
+
+    return MovieUiModel(
+        id = id,
+        title = title,
+        posterUrl = posterUrl,
+        releaseYear = releaseYear,
+        voteAverage = voteAvg
+    )
+}

@@ -15,33 +15,40 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-
-    //todo move to base fragment later
+    // todo move to base fragment later
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
     private var categoryAdapter: CategorySectionAdapter? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.recyclerViewSections.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
         }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.uiStates.collect { states ->
-                    categoryAdapter = CategorySectionAdapter(states)
-                    binding.recyclerViewSections.adapter = categoryAdapter
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiStates.collect { states ->
+                categoryAdapter = CategorySectionAdapter(states)
+                binding.recyclerViewSections.adapter = categoryAdapter
             }
+        }
         viewModel.loadMovies()
     }
 

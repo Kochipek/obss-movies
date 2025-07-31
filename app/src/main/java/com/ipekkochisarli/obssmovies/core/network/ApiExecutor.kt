@@ -3,8 +3,8 @@ package com.ipekkochisarli.obssmovies.core.network
 import retrofit2.HttpException
 import retrofit2.Response
 
-suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): ApiResult<T> {
-    return try {
+suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): ApiResult<T> =
+    try {
         val response = apiCall()
         if (response.isSuccessful) {
             val body = response.body()
@@ -16,11 +16,10 @@ suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): ApiResult<T> {
         } else {
             ApiResult.Error(
                 ApiError.handleException(
-                    HttpException(response)
-                )
+                    HttpException(response),
+                ),
             )
         }
     } catch (e: Exception) {
         ApiResult.Error(ApiError.handleException(e))
     }
-}

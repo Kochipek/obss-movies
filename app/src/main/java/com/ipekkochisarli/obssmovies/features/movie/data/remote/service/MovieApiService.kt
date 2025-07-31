@@ -7,12 +7,11 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MovieApiService {
-
     @GET(POPULAR_MOVIES)
     suspend fun getPopularMovies(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = LANGUAGE,
-        @Query("page") page: Int
+        @Query("page") page: Int,
     ): Response<MovieResponse>
 
     companion object {

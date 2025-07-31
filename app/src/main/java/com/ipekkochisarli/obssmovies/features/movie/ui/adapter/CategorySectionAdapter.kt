@@ -8,10 +8,11 @@ import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
 import com.ipekkochisarli.obssmovies.features.movie.ui.HomeUiState
 
 class CategorySectionAdapter(
-    private var sections: List<HomeUiState>
+    private var sections: List<HomeUiState>,
 ) : RecyclerView.Adapter<CategorySectionAdapter.SectionViewHolder>() {
-
-    inner class SectionViewHolder(val binding: ItemHomeCategorySectionBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SectionViewHolder(
+        val binding: ItemHomeCategorySectionBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(section: HomeUiState) {
             binding.textSectionTitle.text = section.title
 
@@ -25,12 +26,23 @@ class CategorySectionAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionViewHolder {
-        val binding = ItemHomeCategorySectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): SectionViewHolder {
+        val binding =
+            ItemHomeCategorySectionBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
         return SectionViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: SectionViewHolder,
+        position: Int,
+    ) {
         holder.bind(sections[position])
     }
 

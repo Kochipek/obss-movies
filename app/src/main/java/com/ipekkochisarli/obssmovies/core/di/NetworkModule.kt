@@ -14,36 +14,32 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-
     @Provides
     @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-    }
 
     @Provides
     @Singleton
-    fun provideGsonConverterFactory(): GsonConverterFactory {
-        return GsonConverterFactory.create()
-    }
+    fun provideGsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
+    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .addInterceptor(httpLoggingInterceptor)
             .build()
-    }
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+        Retrofit
+            .Builder()
             .baseUrl(BuildConfig.MOVIES_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
 }

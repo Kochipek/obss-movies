@@ -38,7 +38,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -58,30 +58,30 @@ android {
 
 dependencies {
 
-    //retrofit
+    // retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    //coroutines
+    // coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    //hilt
+    // hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.navigation.fragment)
     ksp(libs.hilt.android.compiler)
 
-    //navigation
+    // navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    //okhttp
+    // okhttp
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
 
-    //coil
+    // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
@@ -93,6 +93,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-
 }

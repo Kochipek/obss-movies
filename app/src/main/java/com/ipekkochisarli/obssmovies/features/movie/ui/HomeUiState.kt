@@ -6,5 +6,5 @@ import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
 data class HomeUiState(
     val type: HomeSectionType,
     val title: String,
-    val movies: List<MovieUiModel>
+    val movies: List<MovieUiModel>,
 )

@@ -12,31 +12,36 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val getMovieListBySectionUseCase: GetMovieListBySectionUseCase
-) : ViewModel() {
+class HomeViewModel
+    @Inject
+    constructor(
+        private val getMovieListBySectionUseCase: GetMovieListBySectionUseCase,
+    ) : ViewModel() {
+        private val _uiStates = MutableStateFlow<List<HomeUiState>>(emptyList())
+        val uiStates = _uiStates.asStateFlow()
 
-    private val _uiStates = MutableStateFlow<List<HomeUiState>>(emptyList())
-    val uiStates = _uiStates.asStateFlow()
+        fun loadMovies() {
+            viewModelScope.launch {
+                val sections = HomeSectionType.entries.toTypedArray()
+                val states =
+                    sections.map { section ->
+                        when (val result = getMovieListBySectionUseCase(section)) {
+                            is ApiResult.Success ->
+                                HomeUiState(
+                                    type = section,
+                                    title = section.name,
+                                    movies = result.data,
+                                )
 
-    fun loadMovies() {
-        viewModelScope.launch {
-            val sections = HomeSectionType.entries.toTypedArray()
-            val states = sections.map { section ->
-                when (val result = getMovieListBySectionUseCase(section)) {
-                    is ApiResult.Success -> HomeUiState(
-                        type = section,
-                        title = section.name,
-                        movies = result.data
-                    )
-                    is ApiResult.Error -> HomeUiState(
-                        type = section,
-                        title = section.name,
-                        movies = emptyList()
-                    )
-                }
+                            is ApiResult.Error ->
+                                HomeUiState(
+                                    type = section,
+                                    title = section.name,
+                                    movies = emptyList(),
+                                )
+                        }
+                    }
+                _uiStates.value = states
             }
-            _uiStates.value = states
         }
     }
-}

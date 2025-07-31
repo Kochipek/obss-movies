@@ -5,5 +5,5 @@ data class MovieUiModel(
     val title: String,
     val posterUrl: String,
     val releaseYear: String,
-    val voteAverage: String
+    val voteAverage: String,
 )

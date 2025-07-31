@@ -13,23 +13,13 @@ import retrofit2.Retrofit
 @Module
 @InstallIn(SingletonComponent::class)
 class HomeModule {
+    @Provides
+    fun provideGuideRepository(movieApiService: MovieApiService): MovieRepository = MovieRepositoryImpl(movieApiService)
 
     @Provides
-    fun provideGuideRepository(
-        movieApiService: MovieApiService
-    ) : MovieRepository {
-        return MovieRepositoryImpl(movieApiService)
-    }
-
+    fun provideMovieApiService(retrofit: Retrofit): MovieApiService = retrofit.create(MovieApiService::class.java)
 
     @Provides
-    fun provideMovieApiService(retrofit: Retrofit): MovieApiService {
-        return retrofit.create(MovieApiService::class.java)
-    }
-
-    @Provides
-    fun provideHomeSectionUseCase(
-        movieRepository: MovieRepository
-    ): GetMovieListBySectionUseCase =
+    fun provideHomeSectionUseCase(movieRepository: MovieRepository): GetMovieListBySectionUseCase =
         GetMovieListBySectionUseCase(movieRepository)
-    }
+}

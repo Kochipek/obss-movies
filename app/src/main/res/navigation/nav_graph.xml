@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/onBoardingFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -14,4 +14,12 @@
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/onBoardingFragment"
+        android:name="com.ipekkochisarli.obssmovies.features.onboarding.presentation.OnBoardingFragment"
+        android:label="OnBoardingFragment">
+        <action
+            android:id="@+id/action_onBoardingFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

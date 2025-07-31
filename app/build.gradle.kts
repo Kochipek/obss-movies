@@ -76,6 +76,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
+    // dots indicator
+    implementation(libs.dotsindicator)
+
     // okhttp
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)

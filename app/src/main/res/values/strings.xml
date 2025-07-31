@@ -5,4 +5,12 @@
     <string name="image_poster">image poster</string>
     <string name="movie_title">Movie Title</string>
     <string name="section_title">Section Title</string>
+    <string name="onboarding_title_1">Discover Movies</string>
+    <string name="onboarding_title_2">Save Your Favorites</string>
+    <string name="onboarding_title_3">Search Instantly</string>
+    <string name="onboarding_description_1">Browse popular and trending titles easily.</string>
+    <string name="onboarding_description_2">Keep track of the movies you love.</string>
+    <string name="onboarding_description_3">Find any movie in seconds.</string>
+    <string name="get_started">Get Started</string>
+    <string name="next">Next\n</string>
 </resources>

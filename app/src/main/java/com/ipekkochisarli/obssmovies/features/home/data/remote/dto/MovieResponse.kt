@@ -1,7 +1,7 @@
-package com.ipekkochisarli.obssmovies.features.movie.data.remote.dto
+package com.ipekkochisarli.obssmovies.features.home.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
-import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.util.Constants
 
 data class MovieResponse(

@@ -1,11 +1,11 @@
-package com.ipekkochisarli.obssmovies.features.movie.ui.adapter
+package com.ipekkochisarli.obssmovies.features.home.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
-import com.ipekkochisarli.obssmovies.features.movie.ui.HomeUiState
+import com.ipekkochisarli.obssmovies.features.home.ui.HomeUiState
 
 class CategorySectionAdapter(
     private var sections: List<HomeUiState>,

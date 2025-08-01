@@ -1,11 +1,11 @@
-package com.ipekkochisarli.obssmovies.features.movie.ui.adapter
+package com.ipekkochisarli.obssmovies.features.home.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import com.ipekkochisarli.obssmovies.databinding.ItemMoviesBinding
-import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
 class MovieListAdapter(
     private val movies: List<MovieUiModel>,

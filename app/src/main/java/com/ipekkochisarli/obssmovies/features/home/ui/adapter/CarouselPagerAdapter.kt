@@ -1,4 +1,4 @@
-package com.ipekkochisarli.obssmovies.features.movie.ui.adapter
+package com.ipekkochisarli.obssmovies.features.home.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

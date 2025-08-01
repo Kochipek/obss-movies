@@ -1,12 +1,12 @@
-package com.ipekkochisarli.obssmovies.features.movie.data
+package com.ipekkochisarli.obssmovies.features.home.data
 
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.core.network.safeApiCall
-import com.ipekkochisarli.obssmovies.features.movie.HomeSectionType
-import com.ipekkochisarli.obssmovies.features.movie.data.remote.dto.toDomain
-import com.ipekkochisarli.obssmovies.features.movie.data.remote.service.MovieApiService
-import com.ipekkochisarli.obssmovies.features.movie.domain.MovieRepository
-import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
+import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
+import com.ipekkochisarli.obssmovies.features.home.data.remote.dto.toDomain
+import com.ipekkochisarli.obssmovies.features.home.data.remote.service.MovieApiService
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieRepository
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import javax.inject.Inject
 
 class MovieRepositoryImpl

@@ -1,11 +1,11 @@
-package com.ipekkochisarli.obssmovies.features.movie.ui
+package com.ipekkochisarli.obssmovies.features.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
-import com.ipekkochisarli.obssmovies.features.movie.HomeSectionType
-import com.ipekkochisarli.obssmovies.features.movie.domain.GetMovieListBySectionUseCase
-import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
+import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
+import com.ipekkochisarli.obssmovies.features.home.domain.GetMovieListBySectionUseCase
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

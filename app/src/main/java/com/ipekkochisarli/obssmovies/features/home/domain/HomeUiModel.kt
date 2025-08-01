@@ -1,4 +1,4 @@
-package com.ipekkochisarli.obssmovies.features.movie.domain
+package com.ipekkochisarli.obssmovies.features.home.domain
 
 data class MovieUiModel(
     val id: Int,

@@ -1,7 +1,7 @@
-package com.ipekkochisarli.obssmovies.features.movie.data.remote.service
+package com.ipekkochisarli.obssmovies.features.home.data.remote.service
 
 import com.ipekkochisarli.obssmovies.BuildConfig.API_KEY
-import com.ipekkochisarli.obssmovies.features.movie.data.remote.dto.MovieResponse
+import com.ipekkochisarli.obssmovies.features.home.data.remote.dto.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

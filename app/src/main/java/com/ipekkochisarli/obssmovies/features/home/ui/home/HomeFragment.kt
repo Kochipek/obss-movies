@@ -1,4 +1,4 @@
-package com.ipekkochisarli.obssmovies.features.movie.ui
+package com.ipekkochisarli.obssmovies.features.home.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,10 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.databinding.FragmentHomeBinding
-import com.ipekkochisarli.obssmovies.features.movie.HomeSectionType
-import com.ipekkochisarli.obssmovies.features.movie.ui.adapter.CarouselPagerAdapter
-import com.ipekkochisarli.obssmovies.features.movie.ui.adapter.CategorySectionAdapter
-import com.ipekkochisarli.obssmovies.features.movie.ui.mapper.toCarouselItems
+import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
+import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CarouselPagerAdapter
+import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CategorySectionAdapter
+import com.ipekkochisarli.obssmovies.features.home.ui.mapper.toCarouselItems
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

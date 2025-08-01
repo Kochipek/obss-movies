@@ -1,4 +1,4 @@
-package com.ipekkochisarli.obssmovies.features.movie
+package com.ipekkochisarli.obssmovies.features.home
 
 enum class HomeSectionType(
     val endpoint: String,

@@ -1,7 +1,7 @@
-package com.ipekkochisarli.obssmovies.features.movie.ui.mapper
+package com.ipekkochisarli.obssmovies.features.home.ui.mapper
 
 import com.ipekkochisarli.obssmovies.common.CarouselItem
-import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
 fun List<MovieUiModel>.toCarouselItems(): List<CarouselItem> =
     this.take(3).map { movie ->

@@ -30,7 +30,6 @@ class MovieListAdapter(
     ) {
         val movie = movies[position]
         holder.binding.apply {
-            textTitle.text = movie.title
             imagePoster.load(movie.posterUrl) {
                 // Todo placeholder, error handling
             }

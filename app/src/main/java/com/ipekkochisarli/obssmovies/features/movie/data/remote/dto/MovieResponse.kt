@@ -55,6 +55,13 @@ fun MovieResultsItem.toDomain(): MovieUiModel? {
         } else {
             ""
         }
+    val carouselUrl =
+        if (!backdropPath.isNullOrBlank()) {
+            "${Constants.TMDB_IMAGE_BASE_URL}$backdropPath"
+        } else {
+            ""
+        }
+
     val releaseYear = this.releaseDate?.take(4).orEmpty()
     val voteAvg = voteAverage.toString()
 
@@ -64,5 +71,6 @@ fun MovieResultsItem.toDomain(): MovieUiModel? {
         posterUrl = posterUrl,
         releaseYear = releaseYear,
         voteAverage = voteAvg,
+        carouselUrl = carouselUrl,
     )
 }

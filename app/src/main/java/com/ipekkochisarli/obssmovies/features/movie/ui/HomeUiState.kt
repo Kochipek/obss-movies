@@ -7,4 +7,5 @@ data class HomeUiState(
     val type: HomeSectionType,
     val title: String,
     val movies: List<MovieUiModel>,
+    val carouselImages: List<String> = emptyList(),
 )

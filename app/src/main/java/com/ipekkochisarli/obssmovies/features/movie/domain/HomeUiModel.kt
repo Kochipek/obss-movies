@@ -6,4 +6,5 @@ data class MovieUiModel(
     val posterUrl: String,
     val releaseYear: String,
     val voteAverage: String,
+    val carouselUrl: String? = null,
 )

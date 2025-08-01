@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.movie.HomeSectionType
 import com.ipekkochisarli.obssmovies.features.movie.domain.GetMovieListBySectionUseCase
+import com.ipekkochisarli.obssmovies.features.movie.domain.MovieUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,22 +27,36 @@ class HomeViewModel
                 val states =
                     sections.map { section ->
                         when (val result = getMovieListBySectionUseCase(section)) {
-                            is ApiResult.Success ->
-                                HomeUiState(
-                                    type = section,
-                                    title = section.name,
-                                    movies = result.data,
-                                )
-
+                            is ApiResult.Success -> mapToHomeUiState(section, result.data)
                             is ApiResult.Error ->
                                 HomeUiState(
                                     type = section,
                                     title = section.name,
                                     movies = emptyList(),
+                                    carouselImages = emptyList(),
                                 )
                         }
                     }
                 _uiStates.value = states
             }
+        }
+
+        private fun mapToHomeUiState(
+            section: HomeSectionType,
+            movies: List<MovieUiModel>,
+        ): HomeUiState {
+            val carouselImages =
+                if (section == HomeSectionType.NOW_PLAYING) {
+                    movies.take(3).mapNotNull { it.carouselUrl.takeIf { url -> url?.isNotBlank() ?: false } }
+                } else {
+                    emptyList()
+                }
+
+            return HomeUiState(
+                type = section,
+                title = section.name,
+                movies = movies,
+                carouselImages = carouselImages,
+            )
         }
     }

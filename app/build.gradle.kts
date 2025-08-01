@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 val localProperties = Properties()
@@ -87,6 +88,8 @@ dependencies {
     // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    implementation(libs.kotlin.parcelize.runtime)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

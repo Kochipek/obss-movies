@@ -11,10 +11,10 @@ class CategorySectionAdapter(
     private var sections: List<HomeUiState>,
 ) : RecyclerView.Adapter<CategorySectionAdapter.SectionViewHolder>() {
     inner class SectionViewHolder(
-        val binding: ItemHomeCategorySectionBinding,
+        private val binding: ItemHomeCategorySectionBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(section: HomeUiState) {
-            binding.textSectionTitle.text = section.title
+            binding.textSectionTitle.text = section.title.replace("_", " ")
 
             val movieAdapter = MovieListAdapter(section.movies)
             binding.recyclerViewMoviesHorizontal.apply {

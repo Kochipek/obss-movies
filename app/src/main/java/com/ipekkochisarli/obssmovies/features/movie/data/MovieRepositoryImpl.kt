@@ -17,12 +17,7 @@ class MovieRepositoryImpl
         override suspend fun getMovieListBySection(section: HomeSectionType): ApiResult<List<MovieUiModel>> {
             val apiResult =
                 safeApiCall {
-                    when (section) {
-                        HomeSectionType.POPULAR -> movieApiService.getPopularMovies(page = 1)
-//                HomeSectionType.NOW_PLAYING -> TODO()
-//                HomeSectionType.TOP_RATED -> TODO()
-//                HomeSectionType.UPCOMING -> TODO()
-                    }
+                    movieApiService.getMovies(endpoint = section.endpoint, page = 1)
                 }
 
             return when (apiResult) {

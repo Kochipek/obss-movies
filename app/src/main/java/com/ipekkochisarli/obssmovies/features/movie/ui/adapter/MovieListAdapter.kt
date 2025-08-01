@@ -36,5 +36,5 @@ class MovieListAdapter(
         }
     }
 
-    override fun getItemCount(): Int = movies.size
+    override fun getItemCount(): Int = if (movies.size > 5) 5 else movies.size
 }

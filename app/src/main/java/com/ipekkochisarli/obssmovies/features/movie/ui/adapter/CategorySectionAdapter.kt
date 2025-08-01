@@ -46,5 +46,10 @@ class CategorySectionAdapter(
         holder.bind(sections[position])
     }
 
+    fun updateSections(newSections: List<HomeUiState>) {
+        this.sections = newSections
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int = sections.size
 }

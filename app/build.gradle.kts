@@ -77,7 +77,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     // dots indicator
-    implementation(libs.dotsindicator)
+    implementation(libs.dotsindicator.v510)
 
     // okhttp
     implementation(platform(libs.okhttp.bom))

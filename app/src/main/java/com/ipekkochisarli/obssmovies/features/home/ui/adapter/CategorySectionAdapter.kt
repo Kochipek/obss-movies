@@ -1,20 +1,20 @@
-package com.ipekkochisarli.obssmovies.features.movie.ui.adapter
+package com.ipekkochisarli.obssmovies.features.home.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
-import com.ipekkochisarli.obssmovies.features.movie.ui.HomeUiState
+import com.ipekkochisarli.obssmovies.features.home.ui.HomeUiState
 
 class CategorySectionAdapter(
     private var sections: List<HomeUiState>,
 ) : RecyclerView.Adapter<CategorySectionAdapter.SectionViewHolder>() {
     inner class SectionViewHolder(
-        val binding: ItemHomeCategorySectionBinding,
+        private val binding: ItemHomeCategorySectionBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(section: HomeUiState) {
-            binding.textSectionTitle.text = section.title
+            binding.textSectionTitle.text = section.title.replace("_", " ")
 
             val movieAdapter = MovieListAdapter(section.movies)
             binding.recyclerViewMoviesHorizontal.apply {
@@ -44,6 +44,11 @@ class CategorySectionAdapter(
         position: Int,
     ) {
         holder.bind(sections[position])
+    }
+
+    fun updateSections(newSections: List<HomeUiState>) {
+        this.sections = newSections
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = sections.size

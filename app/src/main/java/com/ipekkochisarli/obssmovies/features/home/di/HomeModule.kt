@@ -1,9 +1,9 @@
-package com.ipekkochisarli.obssmovies.features.movie.di
+package com.ipekkochisarli.obssmovies.features.home.di
 
-import com.ipekkochisarli.obssmovies.features.movie.data.MovieRepositoryImpl
-import com.ipekkochisarli.obssmovies.features.movie.data.remote.service.MovieApiService
-import com.ipekkochisarli.obssmovies.features.movie.domain.GetMovieListBySectionUseCase
-import com.ipekkochisarli.obssmovies.features.movie.domain.MovieRepository
+import com.ipekkochisarli.obssmovies.features.home.data.MovieRepositoryImpl
+import com.ipekkochisarli.obssmovies.features.home.data.remote.service.MovieApiService
+import com.ipekkochisarli.obssmovies.features.home.domain.GetMovieListBySectionUseCase
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.databinding.FragmentHomeBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
@@ -50,7 +51,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        categoryAdapter = CategorySectionAdapter(emptyList())
+        categoryAdapter =
+            CategorySectionAdapter(emptyList()) { sectionType ->
+                onSeeAllClicked(sectionType)
+            }
         binding.recyclerViewSections.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = categoryAdapter
@@ -76,6 +80,18 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun onSeeAllClicked(sectionType: HomeSectionType) {
+        val section = viewModel.uiStates.value.find { it.type == sectionType }
+        val moviesArray = section?.movies?.toTypedArray() ?: emptyArray()
+
+        val action =
+            HomeFragmentDirections.actionHomeFragmentToMovieListFragment(
+                sectionType = sectionType,
+                movieList = moviesArray,
+            )
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

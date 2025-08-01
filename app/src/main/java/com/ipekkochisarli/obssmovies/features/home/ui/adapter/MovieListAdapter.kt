@@ -8,7 +8,7 @@ import com.ipekkochisarli.obssmovies.databinding.ItemMoviesBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
 class MovieListAdapter(
-    private val movies: List<MovieUiModel>,
+    private var movies: List<MovieUiModel>,
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
     // todo can be relpaced with list adapter later
 
@@ -36,5 +36,10 @@ class MovieListAdapter(
         }
     }
 
-    override fun getItemCount(): Int = if (movies.size > 5) 5 else movies.size
+    fun updateMovies(newMovies: List<MovieUiModel>) {
+        movies = newMovies
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int = movies.size
 }

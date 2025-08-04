@@ -58,7 +58,6 @@ class SearchFragment : Fragment() {
 
                 if (data.isNotEmpty()) {
                     adapter.updateMovies(data)
-                    handleEmptyList(data)
                 }
 
                 when (uiState.viewType) {
@@ -66,15 +65,21 @@ class SearchFragment : Fragment() {
                         binding.rvSearchList.layoutManager = LinearLayoutManager(requireContext())
                         binding.buttonToggleView.setImageResource(R.drawable.ic_grid)
                     }
-
                     MovieViewType.GRID -> {
                         binding.rvSearchList.layoutManager = GridLayoutManager(requireContext(), 3)
                         binding.buttonToggleView.setImageResource(R.drawable.ic_list)
                     }
-
                     MovieViewType.POSTER -> {}
                 }
                 adapter.setViewType(uiState.viewType)
+
+                if (uiState.query.isNotBlank() && data.isEmpty()) {
+                    binding.llEmptyList.visible()
+                    binding.rvSearchList.gone()
+                } else {
+                    binding.llEmptyList.gone()
+                    binding.rvSearchList.visible()
+                }
             }
         }
     }
@@ -122,17 +127,6 @@ class SearchFragment : Fragment() {
     private fun setupToggleButton() {
         binding.buttonToggleView.setOnClickListener {
             viewModel.toggleViewType()
-        }
-    }
-
-    private suspend fun handleEmptyList(data: List<Any>?) {
-        delay(100)
-        if (data.isNullOrEmpty()) {
-            binding.llEmptyList.visible()
-            binding.rvSearchList.gone()
-        } else {
-            binding.llEmptyList.gone()
-            binding.rvSearchList.visible()
         }
     }
 

@@ -2,17 +2,16 @@ package com.ipekkochisarli.obssmovies.features.movielist
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.common.MovieViewType
+import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentMovieListBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
+import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 
@@ -23,10 +22,7 @@ data class MovieListFragmentData(
 ) : Parcelable
 
 @AndroidEntryPoint
-class MovieListFragment : Fragment() {
-    private var _binding: FragmentMovieListBinding? = null
-    private val binding get() = _binding!!
-
+class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieListBinding::inflate) {
     private lateinit var movieAdapter: MovieListAdapter
 
     private var currentViewType = MovieViewType.LIST
@@ -35,17 +31,8 @@ class MovieListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            data = it.getParcelable("data")
+            data = it.getParcelable(MOVIE_LIST_DATA)
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentMovieListBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onViewCreated(
@@ -106,10 +93,5 @@ class MovieListFragment : Fragment() {
                 else -> R.drawable.ic_grid
             }
         binding.buttonToggleView.setImageResource(iconRes)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

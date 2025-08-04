@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.common.MovieViewType
+import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentSearchBinding
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
 import com.ipekkochisarli.obssmovies.util.extensions.gone
@@ -23,23 +24,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding::inflate) {
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var adapter: MovieListAdapter
-
-    private var _binding: FragmentSearchBinding? = null
-    private val binding get() = _binding!!
-
     private var searchJob: Job? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(
         view: View,
@@ -145,10 +133,5 @@ class SearchFragment : Fragment() {
         binding.btnBacktoHome.setOnClickListener {
             findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

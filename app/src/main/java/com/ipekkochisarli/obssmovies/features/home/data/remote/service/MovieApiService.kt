@@ -16,7 +16,16 @@ interface MovieApiService {
         @Query("page") page: Int,
     ): Response<MovieResponse>
 
+    @GET(SEARCH_MOVIE)
+    suspend fun searchMovie(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = LANGUAGE,
+        @Query("query") query: String,
+        @Query("page") page: Int,
+    ): Response<MovieResponse>
+
     companion object {
         const val LANGUAGE = "en-US"
+        const val SEARCH_MOVIE = "search/movie"
     }
 }

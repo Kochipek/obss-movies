@@ -5,4 +5,6 @@ import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 
 interface MovieRepository {
     suspend fun getMovieListBySection(section: HomeSectionType): ApiResult<List<MovieUiModel>>
+
+    suspend fun searchMovie(query: String): ApiResult<List<MovieUiModel>>
 }

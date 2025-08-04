@@ -25,6 +25,9 @@
                 android:name="sectionType"
                 app:argType="com.ipekkochisarli.obssmovies.features.home.HomeSectionType" />
         </action>
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
 
     </fragment>
 
@@ -46,4 +49,9 @@
         android:label="fragment_movie_list"
         tools:layout="@layout/fragment_movie_list">
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.ipekkochisarli.obssmovies.features.search.presentation.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>

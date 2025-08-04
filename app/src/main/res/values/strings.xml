@@ -19,5 +19,6 @@
     <string name="section_now_playing">Now Playing</string>
     <string name="section_top_rated">Top Rated</string>
     <string name="section_upcoming">Upcoming Movies</string>
+    <string name="Search">Search...</string>
 
 </resources>

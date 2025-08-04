@@ -23,4 +23,5 @@
     <string name="cancel">cancel\n</string>
     <string name="emptylist">Sorry, no results matching were found.\nPlease try a different title.</string>
     <string name="title_back_to_home">Go back home</string>
+    <string name="search_results">Search Results</string>
 </resources>

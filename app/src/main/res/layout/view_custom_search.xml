@@ -15,8 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvCancel"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.5">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:id="@+id/llSearch"
@@ -27,8 +26,8 @@
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingEnd="8dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edtSearch"

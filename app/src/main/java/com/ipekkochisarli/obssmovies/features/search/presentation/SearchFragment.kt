@@ -56,6 +56,13 @@ class SearchFragment : Fragment() {
             viewModel.uiState.collectLatest { uiState ->
                 val data = uiState.results
 
+                binding.tvSearchTitle.text =
+                    if (uiState.query.isBlank()) {
+                        getString(R.string.section_popular)
+                    } else {
+                        getString(R.string.search_results)
+                    }
+
                 if (data.isNotEmpty()) {
                     adapter.updateMovies(data)
                 }
@@ -65,10 +72,12 @@ class SearchFragment : Fragment() {
                         binding.rvSearchList.layoutManager = LinearLayoutManager(requireContext())
                         binding.buttonToggleView.setImageResource(R.drawable.ic_grid)
                     }
+
                     MovieViewType.GRID -> {
                         binding.rvSearchList.layoutManager = GridLayoutManager(requireContext(), 3)
                         binding.buttonToggleView.setImageResource(R.drawable.ic_list)
                     }
+
                     MovieViewType.POSTER -> {}
                 }
                 adapter.setViewType(uiState.viewType)

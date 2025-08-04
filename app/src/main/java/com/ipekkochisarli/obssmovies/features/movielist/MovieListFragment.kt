@@ -2,7 +2,12 @@ package com.ipekkochisarli.obssmovies.features.movielist
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
@@ -11,8 +16,11 @@ import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentMovieListBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
+import com.ipekkochisarli.obssmovies.features.search.presentation.SearchViewModel
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -23,9 +31,10 @@ data class MovieListFragmentData(
 
 @AndroidEntryPoint
 class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieListBinding::inflate) {
+    private val viewModel: SearchViewModel by viewModels()
+
     private lateinit var movieAdapter: MovieListAdapter
 
-    private var currentViewType = MovieViewType.LIST
     private var data: MovieListFragmentData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,57 +50,57 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieLi
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        movieAdapter = MovieListAdapter(emptyList(), currentViewType)
+        movieAdapter =
+            MovieListAdapter(
+                viewType = MovieViewType.LIST,
+            )
 
         binding.tvHeader.text = data?.header.orEmpty()
 
         setupRecyclerView()
-        movieAdapter.updateMovies(data?.movieList.orEmpty())
-
-        binding.buttonToggleView.setOnClickListener {
-            toggleViewType()
-        }
+        movieAdapter.submitList(data?.movieList.orEmpty())
 
         binding.ivBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+
+        observeViewModel()
     }
 
-    private fun toggleViewType() {
-        currentViewType =
-            when (currentViewType) {
-                MovieViewType.LIST -> MovieViewType.GRID
-                MovieViewType.GRID -> MovieViewType.LIST
-                else -> MovieViewType.LIST
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collectLatest { uiState ->
+                when (uiState.viewType) {
+                    MovieViewType.LIST -> {
+                        binding.recyclerViewFullMovieList.layoutManager =
+                            LinearLayoutManager(requireContext())
+                        binding.buttonToggleView.setImageResource(R.drawable.ic_grid)
+                    }
+
+                    MovieViewType.GRID -> {
+                        binding.recyclerViewFullMovieList.layoutManager =
+                            GridLayoutManager(requireContext(), 3)
+                        binding.buttonToggleView.setImageResource(R.drawable.ic_list)
+                    }
+
+                    MovieViewType.POSTER -> {}
+                }
+                movieAdapter.setViewType(uiState.viewType)
             }
-        updateLayoutMode()
+        }
     }
 
     private fun setupRecyclerView() {
         binding.recyclerViewFullMovieList.apply {
-            layoutManager =
-                when (currentViewType) {
-                    MovieViewType.GRID -> GridLayoutManager(requireContext(), 3)
-                    else -> LinearLayoutManager(requireContext())
-                }
             adapter = movieAdapter
             setHasFixedSize(true)
         }
-        updateToggleIcon()
+        setupToggleButton()
     }
 
-    private fun updateLayoutMode() {
-        movieAdapter.setViewType(currentViewType)
-        setupRecyclerView()
-    }
-
-    private fun updateToggleIcon() {
-        val iconRes =
-            when (currentViewType) {
-                MovieViewType.LIST -> R.drawable.ic_grid
-                MovieViewType.GRID -> R.drawable.ic_list
-                else -> R.drawable.ic_grid
-            }
-        binding.buttonToggleView.setImageResource(iconRes)
+    private fun setupToggleButton() {
+        binding.buttonToggleView.setOnClickListener {
+            viewModel.toggleViewType()
+        }
     }
 }

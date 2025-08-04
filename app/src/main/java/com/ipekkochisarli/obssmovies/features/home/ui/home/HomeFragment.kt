@@ -1,10 +1,7 @@
 package com.ipekkochisarli.obssmovies.features.home.ui.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -45,7 +42,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun setupRecyclerView() {
         categoryAdapter =
-            CategorySectionAdapter(emptyList()) { sectionType ->
+            CategorySectionAdapter { sectionType ->
                 onSeeAllClicked(sectionType)
             }
         binding.recyclerViewSections.apply {
@@ -69,7 +66,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     val carouselItems = nowPlayingSection?.movies?.toCarouselItems()
                     carouselItems?.let { carouselAdapter.updateItems(it) }
 
-                    categoryAdapter.updateSections(states)
+                    categoryAdapter.submitList(states)
                 }
             }
         }

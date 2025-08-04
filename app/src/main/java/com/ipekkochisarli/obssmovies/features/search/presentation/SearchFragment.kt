@@ -1,10 +1,7 @@
 package com.ipekkochisarli.obssmovies.features.search.presentation
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -44,8 +41,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { uiState ->
-                val data = uiState.results
-
                 binding.tvSearchTitle.text =
                     if (uiState.query.isBlank()) {
                         getString(R.string.section_popular)
@@ -53,9 +48,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
                         getString(R.string.search_results)
                     }
 
-                if (data.isNotEmpty()) {
-                    adapter.updateMovies(data)
-                }
+                adapter.submitList(uiState.results)
+                adapter.setViewType(uiState.viewType)
 
                 when (uiState.viewType) {
                     MovieViewType.LIST -> {
@@ -70,9 +64,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
 
                     MovieViewType.POSTER -> {}
                 }
-                adapter.setViewType(uiState.viewType)
 
-                if (uiState.query.isNotBlank() && data.isEmpty()) {
+                if (uiState.query.isNotBlank() && uiState.results.isEmpty()) {
                     binding.llEmptyList.visible()
                     binding.rvSearchList.gone()
                 } else {
@@ -115,7 +108,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
     }
 
     private fun setupAdapter() {
-        adapter = MovieListAdapter(emptyList(), MovieViewType.LIST)
+        adapter = MovieListAdapter(MovieViewType.LIST)
         binding.rvSearchList.adapter = adapter
     }
 

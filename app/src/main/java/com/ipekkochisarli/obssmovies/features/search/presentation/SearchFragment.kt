@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
@@ -49,6 +50,7 @@ class SearchFragment : Fragment() {
         setupToggleButton()
         setupCustomSearchView()
         observeViewModel()
+        navigateToHomeScreen()
     }
 
     private fun observeViewModel() {
@@ -136,6 +138,12 @@ class SearchFragment : Fragment() {
     private fun setupToggleButton() {
         binding.buttonToggleView.setOnClickListener {
             viewModel.toggleViewType()
+        }
+    }
+
+    private fun navigateToHomeScreen() {
+        binding.btnBacktoHome.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
         }
     }
 

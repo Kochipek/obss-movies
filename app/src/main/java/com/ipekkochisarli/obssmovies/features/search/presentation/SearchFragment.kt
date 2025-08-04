@@ -32,7 +32,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
     ) {
         setupAdapter()
         setupRecyclerView()
-        setupToggleButton()
         setupCustomSearchView()
         observeViewModel()
         navigateToHomeScreen()
@@ -114,6 +113,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
 
     private fun setupRecyclerView() {
         binding.rvSearchList.layoutManager = LinearLayoutManager(requireContext())
+        setupToggleButton()
     }
 
     private fun setupToggleButton() {

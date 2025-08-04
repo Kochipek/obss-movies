@@ -19,5 +19,9 @@
     <string name="section_now_playing">Now Playing</string>
     <string name="section_top_rated">Top Rated</string>
     <string name="section_upcoming">Upcoming Movies</string>
-
+    <string name="Search">Search...</string>
+    <string name="cancel">cancel\n</string>
+    <string name="emptylist">Sorry, no results matching were found.\nPlease try a different title.</string>
+    <string name="title_back_to_home">Go back home</string>
+    <string name="search_results">Search Results</string>
 </resources>

@@ -32,4 +32,22 @@ class MovieRepositoryImpl
                 is ApiResult.Error -> ApiResult.Error(apiResult.exception)
             }
         }
+
+        override suspend fun searchMovie(query: String): ApiResult<List<MovieUiModel>> {
+            val apiResult =
+                safeApiCall {
+                    movieApiService.searchMovie(query = query, page = 1)
+                }
+            return when (apiResult) {
+                is ApiResult.Success -> {
+                    val movies =
+                        apiResult.data.results
+                            ?.mapNotNull { it?.toDomain() }
+                            ?: emptyList()
+                    ApiResult.Success(movies)
+                }
+
+                is ApiResult.Error -> ApiResult.Error(apiResult.exception)
+            }
+        }
     }

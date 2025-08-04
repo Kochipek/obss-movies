@@ -1,4 +1,4 @@
-package com.ipekkochisarli.obssmovies.features.home.ui
+package com.ipekkochisarli.obssmovies.features.home.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,11 +10,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.databinding.FragmentHomeBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
+import com.ipekkochisarli.obssmovies.features.home.ui.HomeViewModel
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CarouselPagerAdapter
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CategorySectionAdapter
 import com.ipekkochisarli.obssmovies.features.home.ui.mapper.toCarouselItems
+import com.ipekkochisarli.obssmovies.features.movielist.MovieListFragmentData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -84,14 +87,24 @@ class HomeFragment : Fragment() {
 
     private fun onSeeAllClicked(sectionType: HomeSectionType) {
         val section = viewModel.uiStates.value.find { it.type == sectionType }
-        val moviesArray = section?.movies?.toTypedArray() ?: emptyArray()
+        val header = getString(sectionType.titleRes)
 
-        val action =
-            HomeFragmentDirections.actionHomeFragmentToMovieListFragment(
-                sectionType = sectionType,
-                movieList = moviesArray,
+        val moviesList = section?.movies ?: emptyList()
+        val data =
+            MovieListFragmentData(
+                header = header,
+                movieList = moviesList,
             )
-        findNavController().navigate(action)
+
+        val bundle =
+            Bundle().apply {
+                putParcelable("data", data)
+            }
+
+        findNavController().navigate(
+            R.id.action_homeFragment_to_movieListFragment,
+            bundle,
+        )
     }
 
     override fun onDestroyView() {

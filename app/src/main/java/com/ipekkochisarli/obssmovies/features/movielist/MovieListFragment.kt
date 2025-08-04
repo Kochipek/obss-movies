@@ -1,6 +1,7 @@
 package com.ipekkochisarli.obssmovies.features.movielist
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,13 @@ import com.ipekkochisarli.obssmovies.databinding.FragmentMovieListBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class MovieListFragmentData(
+    val header: String,
+    val movieList: List<MovieUiModel>,
+) : Parcelable
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -20,7 +28,16 @@ class MovieListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var movieAdapter: MovieListAdapter
+
     private var currentViewType = MovieViewType.LIST
+    private var data: MovieListFragmentData? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            data = it.getParcelable("data")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,24 +55,29 @@ class MovieListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         movieAdapter = MovieListAdapter(emptyList(), currentViewType)
-        setupRecyclerView()
 
-        val movies =
-            arguments
-                ?.getParcelableArray("movieList")
-                ?.mapNotNull { it as? MovieUiModel }
-                ?: emptyList()
-        movieAdapter.updateMovies(movies)
+        binding.tvHeader.text = data?.header.orEmpty()
+
+        setupRecyclerView()
+        movieAdapter.updateMovies(data?.movieList.orEmpty())
 
         binding.buttonToggleView.setOnClickListener {
-            currentViewType =
-                when (currentViewType) {
-                    MovieViewType.LIST -> MovieViewType.GRID
-                    MovieViewType.GRID -> MovieViewType.LIST
-                    else -> MovieViewType.LIST
-                }
-            updateLayoutMode()
+            toggleViewType()
         }
+
+        binding.ivBack.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+    }
+
+    private fun toggleViewType() {
+        currentViewType =
+            when (currentViewType) {
+                MovieViewType.LIST -> MovieViewType.GRID
+                MovieViewType.GRID -> MovieViewType.LIST
+                else -> MovieViewType.LIST
+            }
+        updateLayoutMode()
     }
 
     private fun setupRecyclerView() {

@@ -4,14 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="25dp"
     tools:context=".features.movielist.MovieListFragment">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivBack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top"
+        android:layout_marginStart="12dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_arrow_left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivBack"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Tümünü Gör" />
+
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/buttonToggleView"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="end"
-        android:layout_marginTop="40dp"
         android:padding="8dp"
         android:src="@drawable/ic_grid"
         app:layout_constraintEnd_toEndOf="parent"

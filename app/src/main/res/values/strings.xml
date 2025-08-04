@@ -14,4 +14,10 @@
     <string name="get_started">Get Started</string>
     <string name="next">Next\n</string>
     <string name="see_all">See all</string>
+
+    <string name="section_popular">Popular Movies</string>
+    <string name="section_now_playing">Now Playing</string>
+    <string name="section_top_rated">Top Rated</string>
+    <string name="section_upcoming">Upcoming Movies</string>
+
 </resources>

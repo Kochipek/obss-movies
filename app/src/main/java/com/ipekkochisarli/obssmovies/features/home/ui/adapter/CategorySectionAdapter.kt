@@ -4,24 +4,35 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
+import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 import com.ipekkochisarli.obssmovies.features.home.ui.HomeUiState
 
 class CategorySectionAdapter(
     private var sections: List<HomeUiState>,
+    private val onSeeAllClick: ((HomeSectionType) -> Unit)? = null,
 ) : RecyclerView.Adapter<CategorySectionAdapter.SectionViewHolder>() {
     inner class SectionViewHolder(
         private val binding: ItemHomeCategorySectionBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(section: HomeUiState) {
-            binding.textSectionTitle.text = section.title.replace("_", " ")
+        private val movieAdapter = MovieListAdapter(emptyList(), MovieViewType.POSTER)
 
-            val movieAdapter = MovieListAdapter(section.movies)
+        init {
             binding.recyclerViewMoviesHorizontal.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = movieAdapter
                 setHasFixedSize(true)
                 isNestedScrollingEnabled = false
+            }
+        }
+
+        fun bind(section: HomeUiState) {
+            binding.textSectionTitle.text = section.title.replace("_", " ")
+            movieAdapter.updateMovies(section.movies.take(5))
+
+            binding.textSeeAll.setOnClickListener {
+                onSeeAllClick?.invoke(section.type)
             }
         }
     }
@@ -46,10 +57,10 @@ class CategorySectionAdapter(
         holder.bind(sections[position])
     }
 
+    override fun getItemCount(): Int = sections.size
+
     fun updateSections(newSections: List<HomeUiState>) {
-        this.sections = newSections
+        sections = newSections
         notifyDataSetChanged()
     }
-
-    override fun getItemCount(): Int = sections.size
 }

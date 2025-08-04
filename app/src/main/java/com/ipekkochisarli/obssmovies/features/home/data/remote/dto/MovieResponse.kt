@@ -72,5 +72,6 @@ fun MovieResultsItem.toDomain(): MovieUiModel? {
         releaseYear = releaseYear,
         voteAverage = voteAvg,
         carouselUrl = carouselUrl,
+        description = overview,
     )
 }

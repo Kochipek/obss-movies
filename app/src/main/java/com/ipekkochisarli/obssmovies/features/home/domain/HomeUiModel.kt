@@ -11,4 +11,5 @@ data class MovieUiModel(
     val releaseYear: String,
     val voteAverage: String,
     val carouselUrl: String? = null,
+    val description: String? = null,
 ) : Parcelable

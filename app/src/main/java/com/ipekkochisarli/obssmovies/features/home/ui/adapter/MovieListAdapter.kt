@@ -1,27 +1,27 @@
 package com.ipekkochisarli.obssmovies.features.home.ui.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil3.load
-import com.ipekkochisarli.obssmovies.databinding.ItemMoviesBinding
+import com.ipekkochisarli.obssmovies.common.MovieItemView
+import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
 class MovieListAdapter(
     private var movies: List<MovieUiModel>,
+    private var viewType: MovieViewType = MovieViewType.LIST,
 ) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
     // todo can be relpaced with list adapter later
 
     inner class MovieViewHolder(
-        val binding: ItemMoviesBinding,
-    ) : RecyclerView.ViewHolder(binding.root)
+        val movieItemView: MovieItemView,
+    ) : RecyclerView.ViewHolder(movieItemView)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
     ): MovieViewHolder {
-        val binding = ItemMoviesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MovieViewHolder(binding)
+        val view = MovieItemView(parent.context)
+        return MovieViewHolder(view)
     }
 
     override fun onBindViewHolder(
@@ -29,17 +29,18 @@ class MovieListAdapter(
         position: Int,
     ) {
         val movie = movies[position]
-        holder.binding.apply {
-            imagePoster.load(movie.posterUrl) {
-                // Todo placeholder, error handling
-            }
-        }
+        holder.movieItemView.bind(movie, viewType)
     }
+
+    override fun getItemCount(): Int = movies.size
 
     fun updateMovies(newMovies: List<MovieUiModel>) {
         movies = newMovies
         notifyDataSetChanged()
     }
 
-    override fun getItemCount(): Int = movies.size
+    fun setViewType(type: MovieViewType) {
+        viewType = type
+        notifyDataSetChanged()
+    }
 }

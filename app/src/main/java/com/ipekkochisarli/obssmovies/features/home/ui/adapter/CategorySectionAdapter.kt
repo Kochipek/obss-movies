@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 import com.ipekkochisarli.obssmovies.features.home.ui.HomeUiState
@@ -15,7 +16,7 @@ class CategorySectionAdapter(
     inner class SectionViewHolder(
         private val binding: ItemHomeCategorySectionBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val movieAdapter = MovieListAdapter(emptyList())
+        private val movieAdapter = MovieListAdapter(emptyList(), MovieViewType.POSTER)
 
         init {
             binding.recyclerViewMoviesHorizontal.apply {

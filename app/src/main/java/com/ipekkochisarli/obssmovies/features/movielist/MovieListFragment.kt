@@ -2,19 +2,18 @@ package com.ipekkochisarli.obssmovies.features.movielist
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.common.MovieViewType
+import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentMovieListBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
+import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,30 +26,18 @@ data class MovieListFragmentData(
 ) : Parcelable
 
 @AndroidEntryPoint
-class MovieListFragment : Fragment() {
-    private var _binding: FragmentMovieListBinding? = null
-    private val binding get() = _binding!!
+class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieListBinding::inflate) {
+    private val viewModel: MovieListViewModel by viewModels()
 
     private lateinit var movieAdapter: MovieListAdapter
-
-    private val viewModel by viewModels<MovieListViewModel>()
 
     private var data: MovieListFragmentData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            data = it.getParcelable("data")
+            data = it.getParcelable(MOVIE_LIST_DATA)
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentMovieListBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onViewCreated(
@@ -59,12 +46,15 @@ class MovieListFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        movieAdapter = MovieListAdapter(emptyList())
+        movieAdapter =
+            MovieListAdapter(
+                viewType = MovieViewType.LIST,
+            )
 
         binding.tvHeader.text = data?.header.orEmpty()
 
         setupRecyclerView()
-        movieAdapter.updateMovies(data?.movieList.orEmpty())
+        movieAdapter.submitList(data?.movieList.orEmpty())
 
         binding.ivBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
@@ -108,10 +98,5 @@ class MovieListFragment : Fragment() {
         binding.buttonToggleView.setOnClickListener {
             viewModel.toggleViewType()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

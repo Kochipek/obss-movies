@@ -23,30 +23,29 @@ class SearchViewModel
         private val _uiState = MutableStateFlow(SearchUiState())
         val uiState = _uiState.asStateFlow()
 
-        private var currentViewType = MovieViewType.GRID
-
         init {
             loadPopularMovies()
         }
 
         fun loadPopularMovies() {
             viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
                 when (val result = getMovieListBySectionUseCase(HomeSectionType.POPULAR)) {
                     is ApiResult.Success -> {
                         _uiState.value =
-                            SearchUiState(
+                            _uiState.value.copy(
                                 results = result.data,
-                                viewType = currentViewType,
+                                isLoading = false,
+                                error = null,
                                 query = "",
                             )
                     }
 
                     is ApiResult.Error -> {
                         _uiState.value =
-                            SearchUiState(
+                            _uiState.value.copy(
                                 error = result.exception,
-                                viewType = currentViewType,
-                                query = "",
+                                isLoading = false,
                             )
                     }
                 }
@@ -55,24 +54,22 @@ class SearchViewModel
 
         fun search(query: String) {
             viewModelScope.launch {
-                _uiState.value =
-                    SearchUiState(isLoading = true, viewType = currentViewType, query = query)
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null, query = query)
                 when (val result = getSearchUseCase.invoke(query)) {
                     is ApiResult.Success -> {
                         _uiState.value =
-                            SearchUiState(
+                            _uiState.value.copy(
                                 results = result.data,
-                                viewType = currentViewType,
-                                query = query,
+                                isLoading = false,
+                                error = null,
                             )
                     }
 
                     is ApiResult.Error -> {
                         _uiState.value =
-                            SearchUiState(
+                            _uiState.value.copy(
                                 error = result.exception,
-                                viewType = currentViewType,
-                                query = query,
+                                isLoading = false,
                             )
                     }
                 }
@@ -84,12 +81,12 @@ class SearchViewModel
         }
 
         fun toggleViewType() {
-            currentViewType =
-                when (currentViewType) {
+            val newViewType =
+                when (_uiState.value.viewType) {
                     MovieViewType.LIST -> MovieViewType.GRID
                     MovieViewType.GRID -> MovieViewType.LIST
                     else -> MovieViewType.LIST
                 }
-            _uiState.value = _uiState.value.copy(viewType = currentViewType)
+            _uiState.value = _uiState.value.copy(viewType = newViewType)
         }
     }

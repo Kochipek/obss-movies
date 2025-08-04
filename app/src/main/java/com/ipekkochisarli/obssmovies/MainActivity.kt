@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.bottomNav.setOnApplyWindowInsetsListener { view, insets ->
-            view.updatePadding(0, 20, 0, 20)
+            view.updatePadding(0, 0, 0, 0)
             insets
         }
 

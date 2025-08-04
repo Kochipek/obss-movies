@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +13,8 @@ import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.databinding.FragmentSearchBinding
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
+import com.ipekkochisarli.obssmovies.util.extensions.gone
+import com.ipekkochisarli.obssmovies.util.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -46,14 +47,19 @@ class SearchFragment : Fragment() {
         setupAdapter()
         setupRecyclerView()
         setupToggleButton()
-        setupSearchView()
+        setupCustomSearchView()
         observeViewModel()
     }
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { uiState ->
-                adapter.updateMovies(uiState.results)
+                val data = uiState.results
+
+                if (data.isNotEmpty()) {
+                    adapter.updateMovies(data)
+                    handleEmptyList(data)
+                }
 
                 when (uiState.viewType) {
                     MovieViewType.LIST -> {
@@ -68,7 +74,6 @@ class SearchFragment : Fragment() {
 
                     MovieViewType.POSTER -> {}
                 }
-
                 adapter.setViewType(uiState.viewType)
             }
         }
@@ -78,36 +83,31 @@ class SearchFragment : Fragment() {
         searchJob?.cancel()
         searchJob =
             viewLifecycleOwner.lifecycleScope.launch {
-                delay(1000)
+                delay(1000) // 1 saniye debounce
                 viewModel.search(query)
             }
     }
 
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(
-            object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let {
-                        if (it.isNotBlank()) {
-                            viewModel.search(it.trim())
-                        }
-                    }
-                    binding.searchView.clearFocus()
-                    return true
+    private fun setupCustomSearchView() {
+        with(binding.csvSearch) {
+            onQueryTextChangeListener = { query ->
+                if (query.isNotBlank()) {
+                    search(query.trim())
+                } else {
+                    viewModel.clearSearchResults()
                 }
+            }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    newText?.let {
-                        if (it.isNotBlank()) {
-                            search(it.trim())
-                        } else {
-                            viewModel.clearSearchResults()
-                        }
-                    }
-                    return false
+            onSearchActionListener = { query ->
+                if (query.isNotBlank()) {
+                    viewModel.search(query.trim())
                 }
-            },
-        )
+            }
+
+            onCancelClickListener = {
+                viewModel.clearSearchResults()
+            }
+        }
     }
 
     private fun setupAdapter() {
@@ -122,6 +122,17 @@ class SearchFragment : Fragment() {
     private fun setupToggleButton() {
         binding.buttonToggleView.setOnClickListener {
             viewModel.toggleViewType()
+        }
+    }
+
+    private suspend fun handleEmptyList(data: List<Any>?) {
+        delay(100)
+        if (data.isNullOrEmpty()) {
+            binding.llEmptyList.visible()
+            binding.rvSearchList.gone()
+        } else {
+            binding.llEmptyList.gone()
+            binding.rvSearchList.visible()
         }
     }
 

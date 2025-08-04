@@ -24,13 +24,15 @@ class SearchViewModel
 
         fun search(query: String) {
             viewModelScope.launch {
-                _uiState.value = SearchUiState(isLoading = true, viewType = currentViewType)
+                _uiState.value =
+                    SearchUiState(isLoading = true, viewType = currentViewType, query = query)
                 when (val result = getSearchUseCase.invoke(query)) {
                     is ApiResult.Success -> {
                         _uiState.value =
                             SearchUiState(
                                 results = result.data,
                                 viewType = currentViewType,
+                                query = query,
                             )
                     }
 
@@ -39,6 +41,7 @@ class SearchViewModel
                             SearchUiState(
                                 error = result.exception,
                                 viewType = currentViewType,
+                                query = query,
                             )
                     }
                 }
@@ -46,7 +49,7 @@ class SearchViewModel
         }
 
         fun clearSearchResults() {
-            _uiState.value = SearchUiState(viewType = currentViewType)
+            _uiState.value = SearchUiState(viewType = currentViewType, query = "")
         }
 
         fun toggleViewType() {

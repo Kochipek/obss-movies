@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomSearchView">
+        <attr name="CustomSearchView_hint" format="string" />
+        <attr name="CustomSearchView_textColor" format="color" />
+        <attr name="CustomSearchView_hintColor" format="color" />
+    </declare-styleable>
+</resources>

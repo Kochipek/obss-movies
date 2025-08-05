@@ -44,7 +44,7 @@ class SearchViewModel
                     is ApiResult.Error -> {
                         _uiState.value =
                             SearchUiState(
-                                error = result.exception,
+                                error = result.exception.message,
                                 viewType = currentViewType,
                                 query = "",
                             )
@@ -70,7 +70,7 @@ class SearchViewModel
                     is ApiResult.Error -> {
                         _uiState.value =
                             SearchUiState(
-                                error = result.exception,
+                                error = result.exception.message,
                                 viewType = currentViewType,
                                 query = query,
                             )

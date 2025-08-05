@@ -17,93 +17,52 @@ class AuthDataSourceImpl
             email: String,
             password: String,
         ): ApiResult<FirebaseUser> =
-            try {
+            safeCall {
                 val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-                result.user?.let {
-                    ApiResult.Success(it)
-                } ?: ApiResult.Error(AppError.AuthError.UnknownAuthError("User registration failed"))
-            } catch (e: FirebaseAuthException) {
-                ApiResult.Error(
-                    AppError.AuthError.UnknownAuthError(
-                        e.localizedMessage ?: "Registration failed",
-                    ),
-                )
-            } catch (e: Exception) {
-                ApiResult.Error(
-                    AppError.AuthError.UnknownAuthError(
-                        e.localizedMessage ?: "Unknown error",
-                    ),
-                )
+                result.user ?: throw FirebaseAuthException("auth/null-user", "User registration failed")
             }
 
         override suspend fun loginUser(
             email: String,
             password: String,
         ): ApiResult<FirebaseUser> =
-            try {
+            safeCall {
                 val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-                result.user?.let {
-                    ApiResult.Success(it)
-                } ?: ApiResult.Error(AppError.AuthError.UnknownAuthError("Login failed"))
+                result.user ?: throw FirebaseAuthException("auth/null-user", "Login failed")
+            }
+
+        override suspend fun checkIfEmailExists(email: String): ApiResult<Boolean> =
+            safeCall {
+                val task: Task<SignInMethodQueryResult> = firebaseAuth.fetchSignInMethodsForEmail(email)
+                val result: SignInMethodQueryResult = Tasks.await(task)
+                !result.signInMethods.isNullOrEmpty()
+            }
+
+        override suspend fun getCurrentUser(): ApiResult<FirebaseUser> =
+            firebaseAuth.currentUser?.let {
+                ApiResult.Success(it)
+            } ?: ApiResult.Error(AppError.AuthError.UserNotFound("User is not logged in"))
+
+        override suspend fun signOut(): ApiResult<Unit> =
+            safeCall {
+                firebaseAuth.signOut()
+            }
+
+        override suspend fun isUserLoggedIn(): ApiResult<Boolean> =
+            safeCall {
+                firebaseAuth.currentUser != null
+            }
+
+        private suspend fun <T> safeCall(block: suspend () -> T): ApiResult<T> =
+            try {
+                ApiResult.Success(block())
             } catch (e: FirebaseAuthInvalidCredentialsException) {
                 ApiResult.Error(AppError.AuthError.InvalidCredentials("Invalid credentials"))
             } catch (e: FirebaseAuthInvalidUserException) {
                 ApiResult.Error(AppError.AuthError.UserNotFound("User not found"))
             } catch (e: FirebaseAuthException) {
-                ApiResult.Error(
-                    AppError.AuthError.UnknownAuthError(
-                        e.localizedMessage ?: "Login failed",
-                    ),
-                )
+                ApiResult.Error(AppError.AuthError.UnknownAuthError(e.localizedMessage ?: "Auth error"))
             } catch (e: Exception) {
-                ApiResult.Error(
-                    AppError.AuthError.UnknownAuthError(
-                        e.localizedMessage ?: "Unknown error",
-                    ),
-                )
-            }
-
-        override suspend fun checkIfEmailExists(email: String): ApiResult<Boolean> =
-            try {
-                val task: Task<SignInMethodQueryResult> = firebaseAuth.fetchSignInMethodsForEmail(email)
-                val result: SignInMethodQueryResult = Tasks.await(task)
-                val signInMethods = result.signInMethods
-                ApiResult.Success(!signInMethods.isNullOrEmpty())
-            } catch (e: FirebaseAuthException) {
-                ApiResult.Error(
-                    AppError.AuthError.UnknownAuthError(
-                        e.localizedMessage ?: "Error checking email",
-                    ),
-                )
-            } catch (e: Exception) {
-                ApiResult.Error(
-                    AppError.AuthError.UnknownAuthError(
-                        e.localizedMessage ?: "Unknown error",
-                    ),
-                )
-            }
-
-        override suspend fun getCurrentUser(): ApiResult<FirebaseUser> {
-            val currentUser = firebaseAuth.currentUser
-            return if (currentUser != null) {
-                ApiResult.Success(currentUser)
-            } else {
-                ApiResult.Error(AppError.AuthError.UserNotFound("User is not logged in"))
-            }
-        }
-
-        override suspend fun signOut(): ApiResult<Unit> =
-            try {
-                firebaseAuth.signOut()
-                ApiResult.Success(Unit)
-            } catch (e: Exception) {
-                ApiResult.Error(AppError.fromException(e))
-            }
-
-        override suspend fun isUserLoggedIn(): ApiResult<Boolean> =
-            try {
-                ApiResult.Success(firebaseAuth.currentUser != null)
-            } catch (e: Exception) {
-                ApiResult.Error(AppError.fromException(e))
+                ApiResult.Error(AppError.Unknown(e.localizedMessage ?: "Unexpected error occurred"))
             }
     }

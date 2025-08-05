@@ -7,6 +7,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.gms.google-services")
 }
 
 val localProperties = Properties()
@@ -88,6 +89,12 @@ dependencies {
     // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics.ndk)
+    implementation(libs.firebase.analytics)
 
     implementation(libs.kotlin.parcelize.runtime)
 

@@ -15,6 +15,8 @@ interface AuthDataSource {
         password: String,
     ): ApiResult<FirebaseUser>
 
+    suspend fun loginWithGoogle(idToken: String): ApiResult<FirebaseUser>
+
     suspend fun checkIfEmailExists(email: String): ApiResult<Boolean>
 
     suspend fun getCurrentUser(): ApiResult<FirebaseUser>

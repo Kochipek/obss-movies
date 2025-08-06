@@ -40,4 +40,5 @@
     <string name="email_already_exists">This email is already registered. Please use a different email or login.</string>
     <string name="login_error_fields_empty">Please fill in all fields</string>
     <string name="register_error_fields_empty">Please fill in all fields</string>
+    <string name="default_web_client_id">32450197300-dseip1mkp2mbl2jvk8lgadbt9mit39go.apps.googleusercontent.com</string>
 </resources>

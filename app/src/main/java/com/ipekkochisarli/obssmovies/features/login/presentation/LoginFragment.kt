@@ -1,8 +1,10 @@
 package com.ipekkochisarli.obssmovies.features.login.presentation
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -11,6 +13,7 @@ import androidx.navigation.navOptions
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentLoginBinding
+import com.ipekkochisarli.obssmovies.features.login.GoogleAuthClient
 import com.ipekkochisarli.obssmovies.util.extensions.gone
 import com.ipekkochisarli.obssmovies.util.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +24,19 @@ import kotlinx.coroutines.launch
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
     private val viewModel: LoginViewModel by viewModels()
 
+    private lateinit var googleAuthClient: GoogleAuthClient
     private var isLoginMode = true
+
+    private val googleSignInLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                googleAuthClient.handleSignInResult(result.data)
+            } else {
+                Toast
+                    .makeText(requireContext(), "Google Sign-In canceled", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
 
     override fun onViewCreated(
         view: View,
@@ -34,6 +49,28 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             return
         }
 
+        val clientId = getString(R.string.default_web_client_id)
+        googleAuthClient =
+            GoogleAuthClient(
+                requireActivity(),
+                clientId,
+                googleSignInLauncher,
+                onSuccess = { idToken -> viewModel.loginWithGoogle(idToken) },
+                onError = { e ->
+                    Toast
+                        .makeText(
+                            requireContext(),
+                            "Google Sign-In Error: ${e.message}",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                },
+            )
+
+        binding.btnGoogleLogin.setOnClickListener {
+            googleAuthClient.signIn()
+        }
+
+        observeViewModel()
         setupClickListeners()
         observeViewModel()
         updateUiForMode()

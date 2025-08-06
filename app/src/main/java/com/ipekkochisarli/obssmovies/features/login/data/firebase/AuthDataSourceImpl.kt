@@ -56,6 +56,16 @@ class AuthDataSourceImpl
                 firebaseAuth.currentUser != null
             }
 
+        override suspend fun loginWithGoogle(idToken: String): ApiResult<FirebaseUser> =
+            safeCall {
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                val authResult = firebaseAuth.signInWithCredential(credential).await()
+                authResult.user ?: throw FirebaseAuthException(
+                    "auth/null-user",
+                    "Google sign-in failed",
+                )
+            }
+
         private suspend fun <T> safeCall(block: suspend () -> T): ApiResult<T> =
             try {
                 withContext(Dispatchers.IO) {

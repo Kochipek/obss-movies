@@ -15,5 +15,7 @@ interface AuthRepository {
         password: String,
     ): ApiResult<FirebaseUser>
 
+    suspend fun loginWithGoogle(idToken: String): ApiResult<FirebaseUser>
+
     suspend fun checkIfEmailExists(email: String): ApiResult<Boolean>
 }

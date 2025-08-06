@@ -38,5 +38,14 @@ class AuthRepositoryImpl
             return result
         }
 
+        override suspend fun loginWithGoogle(idToken: String): ApiResult<FirebaseUser> {
+            val result = authenticationDataSource.loginWithGoogle(idToken)
+            if (result is ApiResult.Success) {
+                preferencesManager.setUserLoggedIn(true)
+                preferencesManager.saveEmail(result.data.email ?: "")
+            }
+            return result
+        }
+
         override suspend fun checkIfEmailExists(email: String): ApiResult<Boolean> = authenticationDataSource.checkIfEmailExists(email)
     }

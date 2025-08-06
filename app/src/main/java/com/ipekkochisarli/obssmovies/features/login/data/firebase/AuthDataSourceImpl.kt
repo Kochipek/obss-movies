@@ -5,7 +5,9 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.*
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.core.network.AppError
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthDataSourceImpl
@@ -55,7 +57,9 @@ class AuthDataSourceImpl
 
         private suspend fun <T> safeCall(block: suspend () -> T): ApiResult<T> =
             try {
-                ApiResult.Success(block())
+                withContext(Dispatchers.IO) {
+                    ApiResult.Success(block())
+                }
             } catch (e: FirebaseAuthInvalidCredentialsException) {
                 ApiResult.Error(AppError.AuthError.InvalidCredentials("Invalid credentials"))
             } catch (e: FirebaseAuthInvalidUserException) {

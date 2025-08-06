@@ -197,7 +197,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
     private fun navigateToHome() {
         findNavController().navigate(
-            R.id.action_loginFragment_to_homeFragment,
+            R.id.homeFragment,
             null,
             navOptions {
                 popUpTo(R.id.loginFragment) { inclusive = true }

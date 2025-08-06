@@ -3,6 +3,7 @@ package com.ipekkochisarli.obssmovies.features.login.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.ipekkochisarli.obssmovies.core.data.PreferencesManager
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.login.domain.CheckEmailRegisteredUseCase
 import com.ipekkochisarli.obssmovies.features.login.domain.LoginUserUseCase
@@ -22,11 +23,47 @@ class LoginViewModel
         private val registerUseCase: RegisterUseCase,
         private val loginUserUseCase: LoginUserUseCase,
         private val checkEmailRegisteredUseCase: CheckEmailRegisteredUseCase,
+        private val preferencesManager: PreferencesManager,
     ) : ViewModel() {
         private val _authState = MutableStateFlow(LoginUiState())
         val authState = _authState.asStateFlow()
-
         private val firebaseAuth = FirebaseAuth.getInstance()
+
+        init {
+            val rememberMe = preferencesManager.isRememberMeEnabled()
+            val savedEmail = if (rememberMe) preferencesManager.getSavedEmail() else ""
+            savedEmail?.let {
+                _authState.value =
+                    _authState.value.copy(
+                        isRememberMeEnabled = rememberMe,
+                        savedEmail = it,
+                    )
+            }
+        }
+
+        fun setRememberMeChecked(checked: Boolean) {
+            _authState.update { it.copy(isRememberMeEnabled = checked) }
+        }
+
+        fun onEmailChanged(email: String) {
+            _authState.update { it.copy(savedEmail = email) }
+        }
+
+        fun shouldAutoLogin(): Boolean = preferencesManager.isRememberMeEnabled() && preferencesManager.isUserLoggedIn()
+
+        private fun saveLoginPreferences(
+            email: String,
+            rememberMe: Boolean,
+        ) {
+            preferencesManager.setUserLoggedIn(true)
+            if (rememberMe) {
+                preferencesManager.setRememberMeEnabled(true)
+                preferencesManager.saveEmail(email)
+            } else {
+                preferencesManager.setRememberMeEnabled(false)
+                preferencesManager.saveEmail("")
+            }
+        }
 
         fun loginUser(
             email: String,
@@ -36,6 +73,7 @@ class LoginViewModel
                 _authState.update { it.copy(isLoading = true, errorMessage = null) }
                 when (val result = loginUserUseCase(email, password)) {
                     is ApiResult.Success -> {
+                        saveLoginPreferences(email, _authState.value.isRememberMeEnabled)
                         _authState.update {
                             it.copy(
                                 isLoading = false,
@@ -63,26 +101,19 @@ class LoginViewModel
         ) {
             viewModelScope.launch {
                 _authState.update {
-                    it.copy(
-                        isLoading = true,
-                        errorMessage = null,
-                        isEmailAlreadyExists = false,
-                    )
+                    it.copy(isLoading = true, errorMessage = null, isEmailAlreadyExists = false)
                 }
 
                 when (val emailCheckResult = checkEmailRegisteredUseCase(email)) {
                     is ApiResult.Success -> {
                         if (emailCheckResult.data) {
-                            // Email already exists
                             _authState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    isEmailAlreadyExists = true,
-                                )
+                                it.copy(isLoading = false, isEmailAlreadyExists = true)
                             }
                         } else {
                             when (val registerResult = registerUseCase(email, password, userName)) {
                                 is ApiResult.Success -> {
+                                    saveLoginPreferences(email, _authState.value.isRememberMeEnabled)
                                     _authState.update {
                                         it.copy(
                                             isLoading = false,

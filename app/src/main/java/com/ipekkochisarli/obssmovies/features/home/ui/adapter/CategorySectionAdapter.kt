@@ -5,18 +5,37 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ipekkochisarli.obssmovies.common.MovieViewType
+import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
 import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 import com.ipekkochisarli.obssmovies.features.home.ui.HomeUiState
 
 class CategorySectionAdapter(
-    private var sections: List<HomeUiState>,
     private val onSeeAllClick: ((HomeSectionType) -> Unit)? = null,
-) : RecyclerView.Adapter<CategorySectionAdapter.SectionViewHolder>() {
+) : BaseListAdapter<HomeUiState>(
+        itemsSame = { old, new -> old.type == new.type },
+        contentsSame = { old, new -> old == new },
+    ) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        inflater: LayoutInflater,
+        viewType: Int,
+    ): SectionViewHolder {
+        val binding = ItemHomeCategorySectionBinding.inflate(inflater, parent, false)
+        return SectionViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
+        (holder as SectionViewHolder).bind(getItem(position))
+    }
+
     inner class SectionViewHolder(
         private val binding: ItemHomeCategorySectionBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val movieAdapter = MovieListAdapter(emptyList(), MovieViewType.POSTER)
+        private val movieAdapter = MovieListAdapter(MovieViewType.POSTER)
 
         init {
             binding.recyclerViewMoviesHorizontal.apply {
@@ -29,38 +48,11 @@ class CategorySectionAdapter(
 
         fun bind(section: HomeUiState) {
             binding.textSectionTitle.text = section.title.replace("_", " ")
-            movieAdapter.updateMovies(section.movies.take(5))
+            movieAdapter.submitList(section.movies.take(5))
 
             binding.textSeeAll.setOnClickListener {
                 onSeeAllClick?.invoke(section.type)
             }
         }
-    }
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): SectionViewHolder {
-        val binding =
-            ItemHomeCategorySectionBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false,
-            )
-        return SectionViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(
-        holder: SectionViewHolder,
-        position: Int,
-    ) {
-        holder.bind(sections[position])
-    }
-
-    override fun getItemCount(): Int = sections.size
-
-    fun updateSections(newSections: List<HomeUiState>) {
-        sections = newSections
-        notifyDataSetChanged()
     }
 }

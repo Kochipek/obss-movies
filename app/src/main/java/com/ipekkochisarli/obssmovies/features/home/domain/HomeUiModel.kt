@@ -1,6 +1,7 @@
 package com.ipekkochisarli.obssmovies.features.home.domain
 
 import android.os.Parcelable
+import com.ipekkochisarli.obssmovies.common.MovieViewType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -12,4 +13,5 @@ data class MovieUiModel(
     val voteAverage: String,
     val carouselUrl: String? = null,
     val description: String? = null,
+    val viewType: MovieViewType? = null,
 ) : Parcelable

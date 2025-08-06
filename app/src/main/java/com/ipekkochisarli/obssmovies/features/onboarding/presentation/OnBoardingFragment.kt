@@ -1,14 +1,12 @@
 package com.ipekkochisarli.obssmovies.features.onboarding.presentation
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.viewpager2.widget.ViewPager2
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.core.data.PreferencesManager
 import com.ipekkochisarli.obssmovies.databinding.FragmentOnboardingBinding
 import com.ipekkochisarli.obssmovies.features.onboarding.adapter.OnBoardingPagerAdapter
@@ -18,23 +16,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class OnBoardingFragment : Fragment() {
-    private lateinit var binding: FragmentOnboardingBinding
+class OnBoardingFragment : BaseFragment<FragmentOnboardingBinding>(FragmentOnboardingBinding::inflate) {
     private lateinit var onboardingAdapter: OnBoardingPagerAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var dotsIndicator: DotsIndicator
 
     @Inject
     lateinit var preferences: PreferencesManager
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentOnboardingBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(
         view: View,

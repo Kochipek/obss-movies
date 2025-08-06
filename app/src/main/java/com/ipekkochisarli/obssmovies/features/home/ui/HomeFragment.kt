@@ -1,44 +1,31 @@
-package com.ipekkochisarli.obssmovies.features.home.ui.home
+package com.ipekkochisarli.obssmovies.features.home.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentHomeBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
-import com.ipekkochisarli.obssmovies.features.home.ui.HomeViewModel
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CarouselPagerAdapter
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CategorySectionAdapter
 import com.ipekkochisarli.obssmovies.features.home.ui.mapper.toCarouselItems
 import com.ipekkochisarli.obssmovies.features.movielist.MovieListFragmentData
+import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
-
+class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private val viewModel: HomeViewModel by viewModels()
 
     private lateinit var categoryAdapter: CategorySectionAdapter
     private lateinit var carouselAdapter: CarouselPagerAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(
         view: View,
@@ -55,7 +42,7 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         categoryAdapter =
-            CategorySectionAdapter(emptyList()) { sectionType ->
+            CategorySectionAdapter { sectionType ->
                 onSeeAllClicked(sectionType)
             }
         binding.recyclerViewSections.apply {
@@ -73,13 +60,13 @@ class HomeFragment : Fragment() {
 
     private fun collectUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiStates.collect { states ->
                     val nowPlayingSection = states.find { it.type == HomeSectionType.NOW_PLAYING }
                     val carouselItems = nowPlayingSection?.movies?.toCarouselItems()
                     carouselItems?.let { carouselAdapter.updateItems(it) }
 
-                    categoryAdapter.updateSections(states)
+                    categoryAdapter.submitList(states)
                 }
             }
         }
@@ -98,17 +85,12 @@ class HomeFragment : Fragment() {
 
         val bundle =
             Bundle().apply {
-                putParcelable("data", data)
+                putParcelable(MOVIE_LIST_DATA, data)
             }
 
         findNavController().navigate(
             R.id.action_homeFragment_to_movieListFragment,
             bundle,
         )
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

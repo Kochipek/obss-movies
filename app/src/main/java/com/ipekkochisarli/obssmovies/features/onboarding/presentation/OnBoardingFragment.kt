@@ -45,7 +45,7 @@ class OnBoardingFragment : Fragment() {
         setupOnboardingAdapter()
 
         if (preferences.isOnBoardingFinished()) {
-            navigateToHomeScreen()
+            navigateToLoginScreen()
         }
     }
 
@@ -89,7 +89,7 @@ class OnBoardingFragment : Fragment() {
 
         if (currentItem == lastIndex) {
             markOnBoardingAsFinished()
-            navigateToHomeScreen()
+            navigateToLoginScreen()
         } else {
             viewPager.currentItem = currentItem + 1
         }
@@ -99,9 +99,9 @@ class OnBoardingFragment : Fragment() {
         preferences.setOnBoardingFinished(true)
     }
 
-    private fun navigateToHomeScreen() {
+    private fun navigateToLoginScreen() {
         findNavController().navigate(
-            R.id.action_onBoardingFragment_to_homeFragment,
+            R.id.action_onBoardingFragment_to_loginFragment,
             null,
             navOptions {
                 popUpTo(R.id.onBoardingFragment) {

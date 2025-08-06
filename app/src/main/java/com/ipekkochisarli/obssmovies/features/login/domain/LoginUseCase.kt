@@ -1,5 +1,6 @@
 package com.ipekkochisarli.obssmovies.features.login.domain
 
+import com.google.firebase.auth.FirebaseUser
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import javax.inject.Inject
 
@@ -11,10 +12,5 @@ class LoginUserUseCase
         suspend operator fun invoke(
             email: String,
             password: String,
-        ) {
-            when (val result = authRepository.loginUser(email, password)) {
-                is ApiResult.Success -> true
-                is ApiResult.Error -> result.exception.message
-            }
-        }
+        ): ApiResult<FirebaseUser> = authRepository.loginUser(email, password)
     }

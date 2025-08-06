@@ -51,17 +51,12 @@ class LoginViewModel
         fun shouldAutoLogin(): Boolean = preferencesManager.isRememberMeEnabled() && preferencesManager.isUserLoggedIn()
 
         private fun saveLoginPreferences(
-            email: String,
+            email: String? = null,
             rememberMe: Boolean,
         ) {
             preferencesManager.setUserLoggedIn(true)
-            if (rememberMe) {
-                preferencesManager.setRememberMeEnabled(true)
-                preferencesManager.saveEmail(email)
-            } else {
-                preferencesManager.setRememberMeEnabled(false)
-                preferencesManager.saveEmail("")
-            }
+            preferencesManager.setRememberMeEnabled(rememberMe)
+            preferencesManager.saveEmail(if (rememberMe) email.orEmpty() else "")
         }
 
         fun loginUser(
@@ -91,7 +86,7 @@ class LoginViewModel
                 _authState.update { it.copy(isLoading = true, errorMessage = null) }
                 when (val result = googleLoginUseCase(idToken)) {
                     is ApiResult.Success -> {
-                        val email = result.data.email ?: ""
+                        val email = result.data.email
                         saveLoginPreferences(email, _authState.value.isRememberMeEnabled)
                         _authState.update { it.copy(isLoading = false, isUserLoggedIn = true) }
                     }

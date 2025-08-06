@@ -12,5 +12,6 @@ class RegisterUseCase
         suspend operator fun invoke(
             email: String,
             password: String,
-        ): ApiResult<FirebaseUser> = authRepository.registerUser(email, password)
+            userName: String,
+        ): ApiResult<FirebaseUser> = authRepository.registerUser(email, password, userName)
     }

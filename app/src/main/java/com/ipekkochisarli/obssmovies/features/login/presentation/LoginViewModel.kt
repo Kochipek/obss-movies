@@ -59,6 +59,7 @@ class LoginViewModel
         fun registerUser(
             email: String,
             password: String,
+            userName: String,
         ) {
             viewModelScope.launch {
                 _authState.update {
@@ -80,7 +81,7 @@ class LoginViewModel
                                 )
                             }
                         } else {
-                            when (val registerResult = registerUseCase(email, password)) {
+                            when (val registerResult = registerUseCase(email, password, userName)) {
                                 is ApiResult.Success -> {
                                     _authState.update {
                                         it.copy(

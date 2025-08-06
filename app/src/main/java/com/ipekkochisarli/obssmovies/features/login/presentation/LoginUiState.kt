@@ -6,4 +6,7 @@ data class LoginUiState(
     val isEmailAlreadyExists: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val validationErrorMessage: String? = null,
+    val isRememberMeEnabled: Boolean = false,
+    val savedEmail: String = "",
 )

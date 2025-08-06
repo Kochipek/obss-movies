@@ -44,29 +44,21 @@ class PreferencesManager
         private fun getString(key: String): String? = sharedPreferences.getString(key, null)
 
         // Remember Me
-        fun isRememberMeEnabled(): Boolean = getBoolean(KEY_REMEMBER_ME, false)
+        fun isRememberMeEnabled() = getBoolean(KEY_REMEMBER_ME)
 
-        fun setRememberMeEnabled(enabled: Boolean) {
-            saveBoolean(KEY_REMEMBER_ME, enabled)
-        }
+        fun setRememberMeEnabled(enabled: Boolean) = saveBoolean(KEY_REMEMBER_ME, enabled)
 
-        fun saveEmail(email: String) {
-            saveString(KEY_SAVED_EMAIL, email)
-        }
+        fun saveEmail(email: String) = saveString(KEY_SAVED_EMAIL, email)
 
         fun getSavedEmail(): String? = getString(KEY_SAVED_EMAIL)
 
         // User Logged In
-        fun isUserLoggedIn(): Boolean = getBoolean(KEY_IS_USER_LOGGED_IN, false)
+        fun isUserLoggedIn() = getBoolean(KEY_IS_USER_LOGGED_IN)
 
-        fun setUserLoggedIn(loggedIn: Boolean) {
-            saveBoolean(KEY_IS_USER_LOGGED_IN, loggedIn)
-        }
+        fun setUserLoggedIn(loggedIn: Boolean) = saveBoolean(KEY_IS_USER_LOGGED_IN, loggedIn)
 
         // Onboarding
-        fun isOnBoardingFinished(): Boolean = getBoolean(IS_ONBOARDING_FINISHED, false)
+        fun isOnBoardingFinished() = getBoolean(IS_ONBOARDING_FINISHED)
 
-        fun setOnBoardingFinished(finished: Boolean) {
-            saveBoolean(IS_ONBOARDING_FINISHED, finished)
-        }
+        fun setOnBoardingFinished(finished: Boolean) = saveBoolean(IS_ONBOARDING_FINISHED, finished)
     }

@@ -35,4 +35,9 @@
     <string name="remember_me">Remember me</string>
     <string name="or_login_with">Or login with</string>
     <string name="login">Login</string>
+    <string name="back_to_login">Back to Login</string>
+    <string name="register_success"> Registration successful!</string>
+    <string name="email_already_exists">This email is already registered. Please use a different email or login.</string>
+    <string name="login_error_fields_empty">Please fill in all fields</string>
+    <string name="register_error_fields_empty">Please fill in all fields</string>
 </resources>

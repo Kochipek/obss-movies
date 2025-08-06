@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "32450197300",
+    "project_id": "obss-movies",
+    "storage_bucket": "obss-movies.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32450197300:android:2fd8a8e47f1dd571c39761",
+        "android_client_info": {
+          "package_name": "com.ipekkochisarli.obssmovies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32450197300-dseip1mkp2mbl2jvk8lgadbt9mit39go.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ipekkochisarli.obssmovies",
+            "certificate_hash": "8a6cf77163c3b7632777ffde2639262352d9395c"
+          }
+        },
+        {
+          "client_id": "32450197300-sjc28vrfa4d6js8ip5597hemtvl1a9hr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArP18x6BwTeT5v0eHLTPVg6Hi4ik8a0-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32450197300-sjc28vrfa4d6js8ip5597hemtvl1a9hr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

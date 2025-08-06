@@ -2,6 +2,8 @@ package com.ipekkochisarli.obssmovies.core.network
 
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): ApiResult<T> =
     try {
@@ -11,15 +13,11 @@ suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): ApiResult<T> =
             if (body != null) {
                 ApiResult.Success(body)
             } else {
-                ApiResult.Error("Response body is null.")
+                ApiResult.Error(AppError.Unknown("Response body is null."))
             }
         } else {
-            ApiResult.Error(
-                ApiError.handleException(
-                    HttpException(response),
-                ),
-            )
+            ApiResult.Error(AppError.fromException(HttpException(response)))
         }
     } catch (e: Exception) {
-        ApiResult.Error(ApiError.handleException(e))
+        ApiResult.Error(AppError.fromException(e))
     }

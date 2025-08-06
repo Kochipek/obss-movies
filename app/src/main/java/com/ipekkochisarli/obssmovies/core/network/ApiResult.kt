@@ -6,6 +6,6 @@ sealed class ApiResult<out T> {
     ) : ApiResult<T>()
 
     data class Error(
-        val exception: String,
+        val exception: AppError,
     ) : ApiResult<Nothing>()
 }

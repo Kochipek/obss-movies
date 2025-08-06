@@ -44,7 +44,7 @@ class SearchViewModel
                     is ApiResult.Error -> {
                         _uiState.value =
                             _uiState.value.copy(
-                                error = result.exception,
+                                error = result.exception.message,
                                 isLoading = false,
                             )
                     }
@@ -68,7 +68,7 @@ class SearchViewModel
                     is ApiResult.Error -> {
                         _uiState.value =
                             _uiState.value.copy(
-                                error = result.exception,
+                                error = result.exception.message,
                                 isLoading = false,
                             )
                     }

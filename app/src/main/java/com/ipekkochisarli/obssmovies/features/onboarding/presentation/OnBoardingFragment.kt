@@ -2,6 +2,7 @@ package com.ipekkochisarli.obssmovies.features.onboarding.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.viewpager2.widget.ViewPager2
@@ -20,9 +21,7 @@ class OnBoardingFragment : BaseFragment<FragmentOnboardingBinding>(FragmentOnboa
     private lateinit var onboardingAdapter: OnBoardingPagerAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var dotsIndicator: DotsIndicator
-
-    @Inject
-    lateinit var preferences: PreferencesManager
+    private val viewModel: OnBoardingViewModel by viewModels()
 
     override fun onViewCreated(
         view: View,
@@ -32,8 +31,9 @@ class OnBoardingFragment : BaseFragment<FragmentOnboardingBinding>(FragmentOnboa
         initializeViews()
         setupOnboardingAdapter()
 
-        if (preferences.isOnBoardingFinished()) {
+        if (viewModel.isOnboardingFinished()) {
             navigateToLoginScreen()
+            return
         }
     }
 
@@ -84,7 +84,7 @@ class OnBoardingFragment : BaseFragment<FragmentOnboardingBinding>(FragmentOnboa
     }
 
     private fun markOnBoardingAsFinished() {
-        preferences.setOnBoardingFinished(true)
+        viewModel.setOnboardingFinished()
     }
 
     private fun navigateToLoginScreen() {

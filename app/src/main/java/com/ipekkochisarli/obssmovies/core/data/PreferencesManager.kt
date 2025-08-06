@@ -22,17 +22,17 @@ class PreferencesManager
             private const val KEY_IS_USER_LOGGED_IN = "key_is_user_logged_in"
         }
 
+        private fun getBoolean(
+            key: String,
+            defaultValue: Boolean = false,
+        ): Boolean = sharedPreferences.getBoolean(key, defaultValue)
+
         private fun saveBoolean(
             key: String,
             value: Boolean,
         ) {
             sharedPreferences.edit { putBoolean(key, value) }
         }
-
-        private fun getBoolean(
-            key: String,
-            defaultValue: Boolean = false,
-        ): Boolean = sharedPreferences.getBoolean(key, defaultValue)
 
         private fun saveString(
             key: String,
@@ -58,7 +58,9 @@ class PreferencesManager
         fun setUserLoggedIn(loggedIn: Boolean) = saveBoolean(KEY_IS_USER_LOGGED_IN, loggedIn)
 
         // Onboarding
-        fun isOnBoardingFinished() = getBoolean(IS_ONBOARDING_FINISHED)
+        fun isOnBoardingFinished(): Boolean = getBoolean(IS_ONBOARDING_FINISHED)
 
-        fun setOnBoardingFinished(finished: Boolean) = saveBoolean(IS_ONBOARDING_FINISHED, finished)
+        fun setOnBoardingFinished(isFinished: Boolean) {
+            saveBoolean(IS_ONBOARDING_FINISHED, isFinished)
+        }
     }

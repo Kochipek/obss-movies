@@ -7,6 +7,7 @@ interface AuthRepository {
     suspend fun registerUser(
         email: String,
         password: String,
+        userName: String,
     ): ApiResult<FirebaseUser>
 
     suspend fun loginUser(

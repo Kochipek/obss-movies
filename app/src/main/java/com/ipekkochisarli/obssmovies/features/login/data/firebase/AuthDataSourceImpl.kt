@@ -18,6 +18,7 @@ class AuthDataSourceImpl
         override suspend fun registerUser(
             email: String,
             password: String,
+            userName: String,
         ): ApiResult<FirebaseUser> =
             safeCall {
                 val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()

@@ -14,7 +14,8 @@ class AuthRepositoryImpl
         override suspend fun registerUser(
             email: String,
             password: String,
-        ): ApiResult<FirebaseUser> = authenticationDataSource.registerUser(email, password)
+            userName: String,
+        ): ApiResult<FirebaseUser> = authenticationDataSource.registerUser(email, password, userName)
 
         override suspend fun loginUser(
             email: String,

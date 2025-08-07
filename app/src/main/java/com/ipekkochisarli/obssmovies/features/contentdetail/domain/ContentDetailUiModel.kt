@@ -9,6 +9,14 @@ data class ContentDetailUiModel(
     val rating: String,
     val posterUrl: String,
     val backdropUrl: String,
+    val runtimeMinutes: Int? = null,
+    val tagline: String = "",
+    val status: String = "",
+    val originalLanguage: String = "",
+    val budget: Int? = null,
+    val revenue: Int? = null,
+    val homepage: String = "",
+    val productionCompanies: String = "",
 )
 
 data class CastUiModel(

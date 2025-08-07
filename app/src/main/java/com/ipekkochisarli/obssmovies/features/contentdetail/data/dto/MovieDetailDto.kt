@@ -100,7 +100,19 @@ fun MovieDetailDto.toDomain(): ContentDetailUiModel =
         overview = this.overview.orEmpty(),
         releaseYear = this.releaseDate?.take(4).orEmpty(),
         genres = this.genres?.joinToString(", ") { it?.name.orEmpty() }.orEmpty(),
-        rating = this.voteAverage?.toString().orEmpty(),
+        rating = this.voteAverage?.let { "%.1f".format(it as Double) }.orEmpty(),
         posterUrl = posterPath?.let { "${Constants.TMDB_IMAGE_BASE_URL}$it" }.orEmpty(),
         backdropUrl = backdropPath?.let { "${Constants.TMDB_IMAGE_BASE_URL}$it" }.orEmpty(),
+        runtimeMinutes = this.runtime,
+        tagline = this.tagline.orEmpty(),
+        status = this.status.orEmpty(),
+        originalLanguage = this.originalLanguage.orEmpty(),
+        budget = this.budget,
+        revenue = this.revenue,
+        homepage = this.homepage.orEmpty(),
+        productionCompanies =
+            this.productionCompanies
+                ?.mapNotNull { it?.name }
+                ?.joinToString(", ")
+                ?: "",
     )

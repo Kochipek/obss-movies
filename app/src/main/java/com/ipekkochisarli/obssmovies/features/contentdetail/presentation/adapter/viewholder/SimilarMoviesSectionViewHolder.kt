@@ -9,8 +9,9 @@ import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
 class SimilarMoviesSectionViewHolder(
     private val binding: ItemContentDetailSectionBinding,
+    private val onItemClick: ((MovieUiModel) -> Unit)? = null,
 ) : RecyclerView.ViewHolder(binding.root) {
-    private val adapter = SimilarMoviesAdapter()
+    private val adapter = SimilarMoviesAdapter(onItemClick)
 
     init {
         binding.recyclerView.layoutManager =

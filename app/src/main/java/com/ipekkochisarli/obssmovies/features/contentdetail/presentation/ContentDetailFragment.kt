@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
@@ -64,6 +65,10 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
         adapter.onVideoClicked = { videoUrl ->
             navigateToVideoUrl(videoUrl)
         }
+
+        adapter.onSimilarMovieClick = { movie ->
+            navigateToMovieDetail(movie.id)
+        }
     }
 
     private fun navigateToVideoUrl(url: String) {
@@ -72,6 +77,15 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
                 data = url.toUri()
             }
         startActivity(intent)
+    }
+
+    private fun navigateToMovieDetail(movieId: Int) {
+        // bundle
+        val bundle =
+            Bundle().apply {
+                putInt(MOVIE_ID, movieId)
+            }
+        findNavController().navigate(R.id.contentDetailFragment, bundle)
     }
 
     private fun shareText(text: String) {

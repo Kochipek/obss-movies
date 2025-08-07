@@ -12,8 +12,9 @@ import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
-class SimilarMoviesAdapter :
-    BaseListAdapter<MovieUiModel>(
+class SimilarMoviesAdapter(
+    private val onItemClick: ((MovieUiModel) -> Unit)? = null,
+) : BaseListAdapter<MovieUiModel>(
         itemsSame = { old, new -> old.id == new.id },
         contentsSame = { old, new -> old == new },
     ) {
@@ -29,6 +30,10 @@ class SimilarMoviesAdapter :
     ) {
         val movie = getItem(position)
         (holder as SimilarMovieViewHolder).bind(movie)
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(movie)
+        }
     }
 
     class SimilarMovieViewHolder(

@@ -37,6 +37,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var onActionClicked: ((ContentDetailUiModel, Int) -> Unit)? = null
     var onShareClicked: ((String) -> Unit)? = null
     var onVideoClicked: ((videoUrl: String) -> Unit)? = null
+    var onSimilarMovieClick: ((MovieUiModel) -> Unit)? = null
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -105,7 +106,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         parent,
                         false,
                     )
-                SimilarMoviesSectionViewHolder(binding)
+                SimilarMoviesSectionViewHolder(binding, onSimilarMovieClick)
             }
 
             else -> throw IllegalArgumentException("Unknown viewType $viewType")

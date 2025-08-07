@@ -12,6 +12,7 @@ import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentSearchBinding
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
+import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import com.ipekkochisarli.obssmovies.util.extensions.gone
 import com.ipekkochisarli.obssmovies.util.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -107,7 +108,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
     }
 
     private fun setupAdapter() {
-        adapter = MovieListAdapter(MovieViewType.LIST)
+        adapter =
+            MovieListAdapter(
+                MovieViewType.LIST,
+                onMovieClick = { movie ->
+                    navigateToContentDetail(movie.id)
+                },
+            )
         binding.rvSearchList.adapter = adapter
     }
 
@@ -126,5 +133,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
         binding.btnBacktoHome.setOnClickListener {
             findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
         }
+    }
+
+    private fun navigateToContentDetail(movieId: Int) {
+        val bundle =
+            Bundle().apply {
+                putInt(MOVIE_ID, movieId)
+            }
+        findNavController().navigate(
+            R.id.action_searchFragment_to_contentDetailFragment,
+            bundle,
+        )
     }
 }

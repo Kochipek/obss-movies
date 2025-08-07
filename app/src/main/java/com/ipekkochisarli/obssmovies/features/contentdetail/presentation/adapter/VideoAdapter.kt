@@ -1,19 +1,17 @@
 package com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import coil3.request.crossfade
-import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
+import com.ipekkochisarli.obssmovies.databinding.ItemVideoBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.VideoUiModel
 
-class VideoAdapter :
-    BaseListAdapter<VideoUiModel>(
+class VideoAdapter(
+    private val onVideoClicked: ((videoKey: String) -> Unit)? = null,
+) : BaseListAdapter<VideoUiModel>(
         itemsSame = { old, new -> old.id == new.id },
         contentsSame = { old, new -> old == new },
     ) {
@@ -21,7 +19,10 @@ class VideoAdapter :
         parent: ViewGroup,
         inflater: LayoutInflater,
         viewType: Int,
-    ): RecyclerView.ViewHolder = VideoViewHolder(inflater.inflate(R.layout.item_video, parent, false))
+    ): RecyclerView.ViewHolder {
+        val binding = ItemVideoBinding.inflate(inflater, parent, false)
+        return VideoViewHolder(binding, onVideoClicked)
+    }
 
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
@@ -32,16 +33,18 @@ class VideoAdapter :
     }
 
     class VideoViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
-        private val thumbnail: ImageView = itemView.findViewById(R.id.videoThumbnail)
-        private val videoName: TextView = itemView.findViewById(R.id.videoName)
-
+        private val binding: ItemVideoBinding,
+        private val onVideoClicked: ((videoKey: String) -> Unit)?,
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(video: VideoUiModel) {
-            thumbnail.load(video.thumbnailUrl) {
+            binding.videoThumbnail.load(video.thumbnailUrl) {
                 crossfade(true)
             }
-            videoName.text = video.name
+            binding.videoName.text = video.name
+
+            binding.root.setOnClickListener {
+                onVideoClicked?.invoke(video.videoUrl)
+            }
         }
     }
 }

@@ -36,6 +36,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = mutableListOf<ContentDetailItem>()
     var onActionClicked: ((ContentDetailUiModel, Int) -> Unit)? = null
     var onShareClicked: ((String) -> Unit)? = null
+    var onVideoClicked: ((videoUrl: String) -> Unit)? = null
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -92,7 +93,9 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         parent,
                         false,
                     )
-                VideoSectionViewHolder(binding)
+                VideoSectionViewHolder(binding) { videoUrl ->
+                    onVideoClicked?.invoke(videoUrl)
+                }
             }
 
             TYPE_SIMILAR -> {

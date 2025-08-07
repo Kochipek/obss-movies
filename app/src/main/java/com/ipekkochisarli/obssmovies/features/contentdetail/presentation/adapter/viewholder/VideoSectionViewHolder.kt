@@ -9,8 +9,9 @@ import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter
 
 class VideoSectionViewHolder(
     private val binding: ItemContentDetailSectionBinding,
+    private val onVideoClicked: ((String) -> Unit)? = null,
 ) : RecyclerView.ViewHolder(binding.root) {
-    private val adapter = VideoAdapter()
+    private val adapter = VideoAdapter(onVideoClicked)
 
     init {
         binding.recyclerView.layoutManager =

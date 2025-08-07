@@ -3,6 +3,7 @@ package com.ipekkochisarli.obssmovies.features.contentdetail.presentation
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -59,6 +60,18 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
         adapter.onShareClicked = { text ->
             shareText(text)
         }
+
+        adapter.onVideoClicked = { videoUrl ->
+            navigateToVideoUrl(videoUrl)
+        }
+    }
+
+    private fun navigateToVideoUrl(url: String) {
+        val intent =
+            Intent(Intent.ACTION_VIEW).apply {
+                data = url.toUri()
+            }
+        startActivity(intent)
     }
 
     private fun shareText(text: String) {

@@ -2,6 +2,8 @@ package com.ipekkochisarli.obssmovies.features.contentdetail.data.dto
 
 import com.google.gson.annotations.SerializedName
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.VideoUiModel
+import com.ipekkochisarli.obssmovies.util.Constants.YOUTUBE_THUMBNAIL_BASE_URL
+import com.ipekkochisarli.obssmovies.util.Constants.YOUTUBE_VIDEO_BASE_URL
 
 data class VideosDto(
     @SerializedName("id")
@@ -41,8 +43,8 @@ fun VideosDto.toDomain(): List<VideoUiModel> =
         .map {
             VideoUiModel(
                 name = it.name.orEmpty(),
-                thumbnailUrl = "https://img.youtube.com/vi/${it.key}/0.jpg",
-                videoUrl = "https://www.youtube.com/watch?v=${it.key}",
+                thumbnailUrl = "$YOUTUBE_THUMBNAIL_BASE_URL${it.key}/0.jpg",
+                videoUrl = "$YOUTUBE_VIDEO_BASE_URL${it.key}",
                 id = it.id.orEmpty(),
             )
         }

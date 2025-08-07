@@ -8,10 +8,12 @@ import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
 import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
+import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.features.home.ui.HomeUiState
 
 class CategorySectionAdapter(
     private val onSeeAllClick: ((HomeSectionType) -> Unit)? = null,
+    private val onMovieClick: ((MovieUiModel) -> Unit)? = null,
 ) : BaseListAdapter<HomeUiState>(
         itemsSame = { old, new -> old.type == new.type },
         contentsSame = { old, new -> old == new },
@@ -35,7 +37,10 @@ class CategorySectionAdapter(
     inner class SectionViewHolder(
         private val binding: ItemHomeCategorySectionBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val movieAdapter = MovieListAdapter(MovieViewType.POSTER)
+        private val movieAdapter =
+            MovieListAdapter(MovieViewType.POSTER) { movie ->
+                onMovieClick?.invoke(movie)
+            }
 
         init {
             binding.recyclerViewMoviesHorizontal.apply {

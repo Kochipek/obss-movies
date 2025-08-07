@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import androidx.privacysandbox.ads.adservices.adid.AdId
 
 data class CarouselItem(
+    val id: Int,
     val imageUrl: String,
     val title: String,
     val releaseYear: String,

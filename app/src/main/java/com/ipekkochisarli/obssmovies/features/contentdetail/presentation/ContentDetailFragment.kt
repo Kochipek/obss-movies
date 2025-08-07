@@ -13,6 +13,7 @@ import com.ipekkochisarli.obssmovies.databinding.FragmentContentDetailBinding
 import com.ipekkochisarli.obssmovies.databinding.FragmentLoginBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailAdapter
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailItem
+import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -20,9 +21,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(FragmentContentDetailBinding::inflate) {
     private val viewModel: ContentDetailViewModel by viewModels()
-
-    // !todo get id from prev page
-    var movieId: Int = 755898
 
     private val adapter by lazy { ContentDetailAdapter() }
 
@@ -32,6 +30,8 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
     ) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+
+        val movieId = arguments?.getInt(MOVIE_ID) ?: 0
 
         // !todo implement click logic
         adapter.onActionClicked = { detail, menuItemId ->

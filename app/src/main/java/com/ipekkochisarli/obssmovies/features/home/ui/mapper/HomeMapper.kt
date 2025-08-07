@@ -6,6 +6,7 @@ import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 fun List<MovieUiModel>.toCarouselItems(): List<CarouselItem> =
     this.take(3).map { movie ->
         CarouselItem(
+            id = movie.id,
             imageUrl = movie.carouselUrl.orEmpty(),
             title = movie.title,
             releaseYear = movie.releaseYear,

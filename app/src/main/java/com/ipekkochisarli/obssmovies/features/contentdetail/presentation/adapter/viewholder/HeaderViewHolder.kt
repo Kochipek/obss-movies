@@ -12,34 +12,40 @@ class HeaderViewHolder(
     private val binding: ItemContentDetailHeaderBinding,
     private val onActionClicked: ((ContentDetailUiModel, Int) -> Unit)?,
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(detail: ContentDetailUiModel) {
-        val context = binding.root.context
-        binding.posterImage.load(detail.posterUrl) {
-            crossfade(true)
-        }
-        binding.titleText.text = detail.title
-        binding.taglineText.text = detail.tagline.takeIf { it.isNotBlank() } ?: ""
-        binding.overviewText.text = detail.overview
+    fun bind(detail: ContentDetailUiModel) =
+        with(binding) {
+            val context = root.context
 
-        binding.runtimeText.text = detail.runtimeMinutes?.let {
-            context.getString(R.string.runtime_format, it)
-        } ?: context.getString(R.string.runtime_unknown)
-
-        binding.statusText.text = context.getString(R.string.status_format, detail.status)
-        binding.productionCompaniesText.text =
-            context.getString(R.string.production_companies_format, detail.productionCompanies)
-        binding.infoText.text =
-            context.getString(R.string.info_format, detail.releaseYear, detail.genres)
-        binding.ratingText.text = context.getString(R.string.rating_format, detail.rating)
-
-        binding.actionButton.setOnClickListener { view ->
-            val popup = PopupMenu(view.context, view)
-            popup.menuInflater.inflate(R.menu.content_details_dropdown, popup.menu)
-            popup.setOnMenuItemClickListener { menuItem ->
-                onActionClicked?.invoke(detail, menuItem.itemId)
-                true
+            posterImage.load(detail.posterUrl) {
+                crossfade(true)
             }
-            popup.show()
+
+            titleText.text = detail.title
+            taglineText.text = detail.tagline.takeIf { it.isNotBlank() } ?: ""
+            overviewText.text = detail.overview
+
+            runtimeText.text = detail.runtimeMinutes?.let {
+                context.getString(R.string.runtime_format, it)
+            } ?: context.getString(R.string.runtime_unknown)
+
+            statusText.text = context.getString(R.string.status_format, detail.status)
+            productionCompaniesText.text =
+                context.getString(R.string.production_companies_format, detail.productionCompanies)
+
+            infoText.text =
+                context.getString(R.string.info_format, detail.releaseYear, detail.genres)
+
+            ratingText.text = context.getString(R.string.rating_format, detail.rating)
+
+            actionButton.setOnClickListener { view ->
+                PopupMenu(view.context, view).apply {
+                    menuInflater.inflate(R.menu.content_details_dropdown, menu)
+                    setOnMenuItemClickListener { menuItem ->
+                        onActionClicked?.invoke(detail, menuItem.itemId)
+                        true
+                    }
+                    show()
+                }
+            }
         }
-    }
 }

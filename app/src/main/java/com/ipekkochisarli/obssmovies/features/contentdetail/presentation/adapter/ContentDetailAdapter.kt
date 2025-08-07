@@ -35,6 +35,7 @@ sealed class ContentDetailItem {
 class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = mutableListOf<ContentDetailItem>()
     var onActionClicked: ((ContentDetailUiModel, Int) -> Unit)? = null
+    var onShareClicked: ((String) -> Unit)? = null
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -71,7 +72,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         parent,
                         false,
                     )
-                HeaderViewHolder(binding, onActionClicked)
+                HeaderViewHolder(binding, onActionClicked, onShareClicked)
             }
 
             TYPE_CAST -> {

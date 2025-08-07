@@ -11,6 +11,7 @@ import com.ipekkochisarli.obssmovies.features.contentdetail.domain.ContentDetail
 class HeaderViewHolder(
     private val binding: ItemContentDetailHeaderBinding,
     private val onActionClicked: ((ContentDetailUiModel, Int) -> Unit)?,
+    private val onShareClicked: ((String) -> Unit)? = null,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(detail: ContentDetailUiModel) =
         with(binding) {
@@ -45,6 +46,11 @@ class HeaderViewHolder(
                         true
                     }
                     show()
+                }
+            }
+            shareButton.setOnClickListener {
+                detail.title.let { title ->
+                    onShareClicked?.invoke(title)
                 }
             }
         }

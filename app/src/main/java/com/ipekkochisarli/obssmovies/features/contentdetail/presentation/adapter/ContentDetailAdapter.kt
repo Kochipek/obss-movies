@@ -2,18 +2,16 @@ package com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapte
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil3.load
-import coil3.request.crossfade
-import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.databinding.ItemContentDetailHeaderBinding
 import com.ipekkochisarli.obssmovies.databinding.ItemContentDetailSectionBinding
-import com.ipekkochisarli.obssmovies.features.contentdetail.DetailSectionType
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.CastUiModel
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.ContentDetailUiModel
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.VideoUiModel
+import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.viewholder.CastSectionViewHolder
+import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.viewholder.HeaderViewHolder
+import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.viewholder.SimilarMoviesSectionViewHolder
+import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.viewholder.VideoSectionViewHolder
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
 sealed class ContentDetailItem {
@@ -36,14 +34,7 @@ sealed class ContentDetailItem {
 
 class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = mutableListOf<ContentDetailItem>()
-
     var onActionClicked: ((ContentDetailUiModel, Int) -> Unit)? = null
-
-    fun submitList(newItems: List<ContentDetailItem>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
-    }
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -51,6 +42,14 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private const val TYPE_VIDEOS = 2
         private const val TYPE_SIMILAR = 3
     }
+
+    fun submitList(newItems: List<ContentDetailItem>) {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int = items.size
 
     override fun getItemViewType(position: Int): Int =
         when (items[position]) {
@@ -72,7 +71,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         parent,
                         false,
                     )
-                HeaderViewHolder(binding)
+                HeaderViewHolder(binding, onActionClicked)
             }
 
             TYPE_CAST -> {
@@ -108,8 +107,6 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             else -> throw IllegalArgumentException("Unknown viewType $viewType")
         }
 
-    override fun getItemCount(): Int = items.size
-
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
@@ -122,92 +119,6 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 (holder as SimilarMoviesSectionViewHolder).bind(
                     item.movieList,
                 )
-        }
-    }
-
-    inner class HeaderViewHolder(
-        private val binding: ItemContentDetailHeaderBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(detail: ContentDetailUiModel) {
-            val context = binding.root.context
-            binding.posterImage.load(detail.posterUrl) {
-                crossfade(true)
-            }
-            binding.titleText.text = detail.title
-            binding.taglineText.text = detail.tagline.takeIf { it.isNotBlank() } ?: ""
-            binding.overviewText.text = detail.overview
-
-            binding.runtimeText.text = detail.runtimeMinutes?.let {
-                context.getString(R.string.runtime_format, it)
-            } ?: context.getString(R.string.runtime_unknown)
-
-            binding.statusText.text = context.getString(R.string.status_format, detail.status)
-            binding.productionCompaniesText.text =
-                context.getString(R.string.production_companies_format, detail.productionCompanies)
-            binding.infoText.text =
-                context.getString(R.string.info_format, detail.releaseYear, detail.genres)
-            binding.ratingText.text = context.getString(R.string.rating_format, detail.rating)
-
-            binding.actionButton.setOnClickListener { view ->
-                val popup = PopupMenu(view.context, view)
-                popup.menuInflater.inflate(R.menu.content_details_dropdown, popup.menu)
-                popup.setOnMenuItemClickListener { menuItem ->
-                    onActionClicked?.invoke(detail, menuItem.itemId)
-                    true
-                }
-                popup.show()
-            }
-        }
-    }
-
-    inner class CastSectionViewHolder(
-        private val binding: ItemContentDetailSectionBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        private val adapter = CastAdapter()
-
-        init {
-            binding.recyclerView.layoutManager =
-                LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-            binding.recyclerView.adapter = adapter
-        }
-
-        fun bind(castList: List<CastUiModel>) {
-            binding.sectionTitle.text = binding.root.context.getString(DetailSectionType.CREDITS.titleResId)
-            adapter.submitList(castList)
-        }
-    }
-
-    inner class VideoSectionViewHolder(
-        private val binding: ItemContentDetailSectionBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        private val adapter = VideoAdapter()
-
-        init {
-            binding.recyclerView.layoutManager =
-                LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-            binding.recyclerView.adapter = adapter
-        }
-
-        fun bind(videoList: List<VideoUiModel>) {
-            binding.sectionTitle.text = binding.root.context.getString(DetailSectionType.VIDEOS.titleResId)
-            adapter.submitList(videoList)
-        }
-    }
-
-    inner class SimilarMoviesSectionViewHolder(
-        private val binding: ItemContentDetailSectionBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        private val adapter = SimilarMoviesAdapter()
-
-        init {
-            binding.recyclerView.layoutManager =
-                LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-            binding.recyclerView.adapter = adapter
-        }
-
-        fun bind(movieList: List<MovieUiModel>) {
-            binding.sectionTitle.text = binding.root.context.getString(DetailSectionType.SIMILAR_MOVIES.titleResId)
-            adapter.submitList(movieList)
         }
     }
 }

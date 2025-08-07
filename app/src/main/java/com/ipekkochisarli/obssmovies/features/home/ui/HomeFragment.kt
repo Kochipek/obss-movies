@@ -16,6 +16,7 @@ import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CarouselPagerAdapt
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CategorySectionAdapter
 import com.ipekkochisarli.obssmovies.features.home.ui.mapper.toCarouselItems
 import com.ipekkochisarli.obssmovies.features.movielist.MovieListFragmentData
+import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -42,9 +43,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun setupRecyclerView() {
         categoryAdapter =
-            CategorySectionAdapter { sectionType ->
-                onSeeAllClicked(sectionType)
-            }
+            CategorySectionAdapter(
+                onSeeAllClick = { sectionType ->
+                    onSeeAllClicked(sectionType)
+                },
+                onMovieClick = { movie ->
+                    navigateToContentDetail(movie.id)
+                },
+            )
         binding.recyclerViewSections.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = categoryAdapter
@@ -53,7 +59,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun setupCarousel() {
-        carouselAdapter = CarouselPagerAdapter(emptyList())
+        carouselAdapter =
+            CarouselPagerAdapter(emptyList()) { carouselItem ->
+                navigateToContentDetail(carouselItem.id)
+            }
         binding.viewPagerCarousel.adapter = carouselAdapter
         binding.dotsIndicator.attachTo(binding.viewPagerCarousel)
     }
@@ -70,6 +79,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
             }
         }
+    }
+
+    private fun navigateToContentDetail(movieId: Int) {
+        val bundle =
+            Bundle().apply {
+                putInt(MOVIE_ID, movieId)
+            }
+        findNavController().navigate(
+            R.id.action_homeFragment_to_contentDetailFragment,
+            bundle,
+        )
     }
 
     private fun onSeeAllClicked(sectionType: HomeSectionType) {

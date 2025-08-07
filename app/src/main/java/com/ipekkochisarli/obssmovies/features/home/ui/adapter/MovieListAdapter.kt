@@ -10,6 +10,7 @@ import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 
 class MovieListAdapter(
     private var viewType: MovieViewType = MovieViewType.LIST,
+    private val onMovieClick: ((MovieUiModel) -> Unit)? = null,
 ) : BaseListAdapter<MovieUiModel>(
         itemsSame = { old, new -> old.id == new.id },
         contentsSame = { old, new -> old == new },
@@ -29,6 +30,10 @@ class MovieListAdapter(
     ) {
         val movie = getItem(position)
         (holder as MovieViewHolder).movieItemView.bind(movie, viewType)
+
+        holder.itemView.setOnClickListener {
+            onMovieClick?.invoke(movie)
+        }
     }
 
     inner class MovieViewHolder(

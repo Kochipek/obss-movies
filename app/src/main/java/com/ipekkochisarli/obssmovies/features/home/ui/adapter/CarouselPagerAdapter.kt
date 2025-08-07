@@ -9,6 +9,7 @@ import com.ipekkochisarli.obssmovies.databinding.ItemCarouselMovieBinding
 
 class CarouselPagerAdapter(
     private var items: List<CarouselItem>,
+    private val onItemClick: ((CarouselItem) -> Unit)? = null,
 ) : RecyclerView.Adapter<CarouselPagerAdapter.CarouselViewHolder>() {
     inner class CarouselViewHolder(
         private val binding: ItemCarouselMovieBinding,
@@ -18,6 +19,10 @@ class CarouselPagerAdapter(
                 imagePoster.load(item.imageUrl)
                 tvTitle.text = item.title
                 tvReleaseDate.text = item.releaseYear
+
+                binding.root.setOnClickListener {
+                    onItemClick?.invoke(item)
+                }
             }
         }
     }

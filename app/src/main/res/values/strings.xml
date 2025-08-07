@@ -41,4 +41,24 @@
     <string name="login_error_fields_empty">Please fill in all fields</string>
     <string name="register_error_fields_empty">Please fill in all fields</string>
     <string name="default_web_client_id">32450197300-dseip1mkp2mbl2jvk8lgadbt9mit39go.apps.googleusercontent.com</string>
+    <string name="actions">Actions</string>
+    <string name="share">Share</string>
+    <string name="section_cast">Cast</string>
+    <string name="section_videos">Videos</string>
+    <string name="section_similar_movies">Similar Movies</string>
+
+    <string name="runtime_unknown">Runtime unknown</string>
+    <string name="runtime_format">%1$d min</string>
+    <string name="status_format">Status: %1$s</string>
+    <string name="production_companies_format">Production: %1$s</string>
+    <string name="info_format">Year: %1$s | Genres: %2$s</string>
+
+    <string name="action_add_to_watch_later">Add to Watch Later</string>
+    <string name="action_add_to_watched">Add to Watched</string>
+    <string name="share_chooser_title">Share</string>
+    <string name="share_text_format">%1$s - Check out more info in the app!</string>
+
+    <string name="watch_later_toast">%1$s added to Watch Later</string>
+    <string name="watched_toast">%1$s added to Watched</string>
+    <string name="rating_format">Rating: %1$s / 10</string>
 </resources>

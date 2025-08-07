@@ -1,9 +1,13 @@
 package com.ipekkochisarli.obssmovies.features.home.data.remote.service
 
 import com.ipekkochisarli.obssmovies.BuildConfig.API_KEY
+import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.CreditsDto
+import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.MovieDetailDto
+import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.VideosDto
 import com.ipekkochisarli.obssmovies.features.home.data.remote.dto.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
 
@@ -22,6 +26,30 @@ interface MovieApiService {
         @Query("language") language: String = LANGUAGE,
         @Query("query") query: String,
         @Query("page") page: Int,
+    ): Response<MovieResponse>
+
+    @GET("movie/{movie_id}")
+    suspend fun getMovieDetail(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<MovieDetailDto>
+
+    @GET("movie/{movie_id}/credits")
+    suspend fun getCredits(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<CreditsDto>
+
+    @GET("movie/{movie_id}/videos")
+    suspend fun getVideos(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<VideosDto>
+
+    @GET("movie/{movie_id}/similar")
+    suspend fun getSimilarMovies(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
     ): Response<MovieResponse>
 
     companion object {

@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_add_to_watch_later"
+        android:title=" Add to Watch Later" />
+    <item
+        android:id="@+id/action_add_to_watched"
+        android:title="Add to Watch List" />
+</menu>

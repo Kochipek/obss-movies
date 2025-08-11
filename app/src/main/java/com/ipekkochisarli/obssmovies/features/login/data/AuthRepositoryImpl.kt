@@ -22,6 +22,7 @@ class AuthRepositoryImpl
             if (result is ApiResult.Success) {
                 preferencesManager.setUserLoggedIn(true)
                 preferencesManager.saveEmail(email)
+                preferencesManager.saveUsername(userName)
             }
             return result
         }

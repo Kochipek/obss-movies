@@ -20,6 +20,7 @@ class PreferencesManager
             private const val KEY_REMEMBER_ME = "key_remember_me"
             private const val KEY_SAVED_EMAIL = "key_saved_email"
             private const val KEY_IS_USER_LOGGED_IN = "key_is_user_logged_in"
+            private const val KEY_SAVED_USERNAME = "key_saved_username"
         }
 
         private fun getBoolean(
@@ -62,5 +63,18 @@ class PreferencesManager
 
         fun setOnBoardingFinished(isFinished: Boolean) {
             saveBoolean(IS_ONBOARDING_FINISHED, isFinished)
+        }
+
+        fun saveUsername(username: String) = saveString(KEY_SAVED_USERNAME, username)
+
+        fun getSavedUsername(): String? = getString(KEY_SAVED_USERNAME)
+
+        fun clearUserData() {
+            sharedPreferences.edit {
+                remove(KEY_SAVED_EMAIL)
+                remove(KEY_IS_USER_LOGGED_IN)
+                remove(KEY_REMEMBER_ME)
+                remove(KEY_SAVED_USERNAME)
+            }
         }
     }

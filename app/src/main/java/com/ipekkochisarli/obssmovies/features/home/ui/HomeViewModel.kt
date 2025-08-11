@@ -2,6 +2,7 @@ package com.ipekkochisarli.obssmovies.features.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ipekkochisarli.obssmovies.core.data.PreferencesManager
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 import com.ipekkochisarli.obssmovies.features.home.domain.GetMovieListBySectionUseCase
@@ -17,9 +18,12 @@ class HomeViewModel
     @Inject
     constructor(
         private val getMovieListBySectionUseCase: GetMovieListBySectionUseCase,
+        private val preferencesManager: PreferencesManager,
     ) : ViewModel() {
         private val _uiStates = MutableStateFlow<List<HomeUiState>>(emptyList())
         val uiStates = _uiStates.asStateFlow()
+
+        val isGuest = !preferencesManager.isUserLoggedIn()
 
         fun loadMovies() {
             viewModelScope.launch {

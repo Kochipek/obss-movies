@@ -18,6 +18,8 @@ import com.ipekkochisarli.obssmovies.features.home.ui.mapper.toCarouselItems
 import com.ipekkochisarli.obssmovies.features.movielist.MovieListFragmentData
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
+import com.ipekkochisarli.obssmovies.util.extensions.gone
+import com.ipekkochisarli.obssmovies.util.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -56,6 +58,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             adapter = categoryAdapter
             setHasFixedSize(true)
         }
+        binding.imageViewProfileIcon.setOnClickListener {
+            navigateToProfile()
+        }
+
+        if (!viewModel.isGuest) {
+            binding.imageViewProfileIcon.visible()
+        } else {
+            binding.imageViewProfileIcon.gone()
+        }
     }
 
     private fun setupCarousel() {
@@ -90,6 +101,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             R.id.action_homeFragment_to_contentDetailFragment,
             bundle,
         )
+    }
+
+    private fun navigateToProfile() {
+        findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
     }
 
     private fun onSeeAllClicked(sectionType: HomeSectionType) {

@@ -19,6 +19,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(FragmentLibraryBind
     ) {
         super.onViewCreated(view, savedInstanceState)
         pagerAdapter = LibraryPagerAdapter(this)
+        binding.viewPager.isUserInputEnabled = false
         binding.viewPager.adapter = pagerAdapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->

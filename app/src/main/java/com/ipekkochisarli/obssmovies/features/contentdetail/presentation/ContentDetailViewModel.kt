@@ -143,5 +143,6 @@ class ContentDetailViewModel
                 posterUrl = posterUrl,
                 releaseYear = releaseYear.substringBefore("-"),
                 listType = listType,
+                description = overview,
             )
     }

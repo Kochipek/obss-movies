@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
+import com.ipekkochisarli.obssmovies.core.presentation.SwipeToDeleteCallback
 import com.ipekkochisarli.obssmovies.databinding.FragmentSavedMoviesBinding
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
@@ -57,6 +58,15 @@ class LibraryTabFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSave
     private fun setupRecyclerView() {
         binding.rvFavoriteMovies.layoutManager = LinearLayoutManager(requireContext())
         binding.rvFavoriteMovies.adapter = adapter
+
+        val swipeCallback =
+            SwipeToDeleteCallback { position ->
+                val movie = adapter.currentList.getOrNull(position) ?: return@SwipeToDeleteCallback
+                viewModel.removeFavoriteMovie(movie.id, listType)
+            }
+
+        val itemTouchHelper = androidx.recyclerview.widget.ItemTouchHelper(swipeCallback)
+        itemTouchHelper.attachToRecyclerView(binding.rvFavoriteMovies)
     }
 
     companion object {

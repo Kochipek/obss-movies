@@ -14,4 +14,5 @@ data class FavoriteMovieEntity(
     val posterUrl: String,
     val releaseYear: String,
     val listType: String,
+    val description: String,
 )

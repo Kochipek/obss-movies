@@ -6,6 +6,7 @@ import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.GetFavoriteMoviesUseCase
+import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.RemoveFavoriteMovieUseCase
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ class FavoriteMoviesViewModel
     @Inject
     constructor(
         private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
+        private val removeFavoriteMovieUseCase: RemoveFavoriteMovieUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow<List<MovieUiModel>>(emptyList())
         val uiState: StateFlow<List<MovieUiModel>> = _uiState
@@ -33,11 +35,22 @@ class FavoriteMoviesViewModel
             }
         }
 
+        fun removeFavoriteMovie(
+            movieId: Int,
+            listType: LibraryCategoryType,
+        ) {
+            viewModelScope.launch {
+                removeFavoriteMovieUseCase(movieId, listType)
+                loadFavorites(listType)
+            }
+        }
+
         private fun FavoriteMovieUiModel.toMovieUiModel(): MovieUiModel =
             MovieUiModel(
                 id = id,
                 title = title,
                 posterUrl = posterUrl,
                 releaseYear = releaseYear,
+                description = description,
             )
     }

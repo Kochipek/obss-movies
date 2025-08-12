@@ -50,7 +50,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             viewModel.logout()
             navigateToLogin()
         }
-        binding.buttonGoToFavorites.setOnClickListener {
+        binding.ivLibraryArrow.setOnClickListener {
             findNavController().navigate(R.id.libraryFragment)
         }
     }

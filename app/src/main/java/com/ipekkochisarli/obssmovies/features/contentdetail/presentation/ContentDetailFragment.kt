@@ -13,6 +13,7 @@ import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentContentDetailBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailAdapter
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailItem
+import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteListType
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -49,11 +50,11 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
         adapter.onActionClicked = { detail, menuItemId ->
             when (menuItemId) {
                 R.id.action_add_to_watch_later -> {
-                    // TODO: Implement "add to watch later"
+                    viewModel.toggleFavorite(FavoriteListType.WATCH_LATER)
                 }
 
                 R.id.action_add_to_watched -> {
-                    // TODO: Implement "add to watched"
+                    viewModel.toggleFavorite(FavoriteListType.WATCHED)
                 }
             }
         }
@@ -100,7 +101,7 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
     }
 
     private fun observeUiState() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 val items = mutableListOf<ContentDetailItem>()
 

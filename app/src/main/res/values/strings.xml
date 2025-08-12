@@ -62,4 +62,5 @@
     <string name="watched_toast">%1$s added to Watched</string>
     <string name="rating_format">Rating: %1$s / 10</string>
     <string name="logout">Logout</string>
+    <string name="library">Library</string>
 </resources>

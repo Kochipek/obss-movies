@@ -1,7 +1,7 @@
 package com.ipekkochisarli.obssmovies.features.favorites.domain.usecase
 
 import com.ipekkochisarli.obssmovies.features.favorites.domain.FavoriteRepository
-import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteListType
+import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import javax.inject.Inject
 
 class RemoveFavoriteMovieUseCase
@@ -11,6 +11,6 @@ class RemoveFavoriteMovieUseCase
     ) {
         suspend operator fun invoke(
             movieId: Int,
-            listType: FavoriteListType,
+            listType: LibraryCategoryType,
         ) = repository.removeFavorite(movieId)
     }

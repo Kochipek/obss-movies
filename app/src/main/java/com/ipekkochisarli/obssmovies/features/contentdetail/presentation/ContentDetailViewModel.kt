@@ -8,10 +8,9 @@ import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.DetailSecti
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.ContentDetailUiModel
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.usecase.GetMovieDetailSectionUseCase
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.usecase.GetMovieDetailUseCase
-import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteListType
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
+import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.AddFavoriteMovieUseCase
-import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.GetFavoriteMoviesUseCase
 import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.RemoveFavoriteMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,11 +85,11 @@ class ContentDetailViewModel
             }
         }
 
-        fun toggleFavorite(listType: FavoriteListType) {
+        fun toggleFavorite(listType: LibraryCategoryType) {
             val currentDetail = _uiState.value.detail ?: return
             viewModelScope.launch {
                 when (listType) {
-                    FavoriteListType.WATCHED -> {
+                    LibraryCategoryType.WATCHED -> {
                         if (_uiState.value.isWatched) {
                             removeFavoriteMovieUseCase(currentDetail.id, listType)
                             _uiState.update { it.copy(isWatched = false) }
@@ -103,7 +102,7 @@ class ContentDetailViewModel
                         }
                     }
 
-                    FavoriteListType.WATCH_LATER -> {
+                    LibraryCategoryType.WATCH_LATER -> {
                         if (_uiState.value.isAddedWatchLater) {
                             removeFavoriteMovieUseCase(currentDetail.id, listType)
                             _uiState.update { it.copy(isAddedWatchLater = false) }
@@ -119,7 +118,7 @@ class ContentDetailViewModel
             }
         }
 
-        private fun ContentDetailUiModel.toFavoriteMovieUiModel(listType: FavoriteListType) =
+        private fun ContentDetailUiModel.toFavoriteMovieUiModel(listType: LibraryCategoryType) =
             FavoriteMovieUiModel(
                 id = id,
                 title = title,

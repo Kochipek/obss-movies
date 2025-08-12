@@ -4,8 +4,8 @@ import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.core.network.AppError
 import com.ipekkochisarli.obssmovies.features.favorites.data.local.dao.FavoriteMovieDao
 import com.ipekkochisarli.obssmovies.features.favorites.domain.FavoriteRepository
-import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteListType
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
+import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.toDomain
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.toEntity
 import com.ipekkochisarli.obssmovies.features.login.domain.AuthRepository
@@ -27,7 +27,7 @@ class FavoriteRepositoryImpl
             dao.deleteFavorite(movieId, userId)
         }
 
-        override suspend fun getFavoritesByListType(listType: FavoriteListType): ApiResult<List<FavoriteMovieUiModel>> =
+        override suspend fun getFavoritesByListType(listType: LibraryCategoryType): ApiResult<List<FavoriteMovieUiModel>> =
             try {
                 val userId =
                     authRepository.getCurrentUserId()

@@ -13,7 +13,7 @@ import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentContentDetailBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailAdapter
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailItem
-import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteListType
+import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -50,11 +50,11 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
         adapter.onActionClicked = { detail, menuItemId ->
             when (menuItemId) {
                 R.id.action_add_to_watch_later -> {
-                    viewModel.toggleFavorite(FavoriteListType.WATCH_LATER)
+                    viewModel.toggleFavorite(LibraryCategoryType.WATCH_LATER)
                 }
 
                 R.id.action_add_to_watched -> {
-                    viewModel.toggleFavorite(FavoriteListType.WATCHED)
+                    viewModel.toggleFavorite(LibraryCategoryType.WATCHED)
                 }
             }
         }

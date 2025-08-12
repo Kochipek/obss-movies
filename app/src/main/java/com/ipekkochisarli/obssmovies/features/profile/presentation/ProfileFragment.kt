@@ -51,7 +51,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             navigateToLogin()
         }
         binding.buttonGoToFavorites.setOnClickListener {
-            findNavController().navigate(R.id.favoriteMoviesFragment)
+            findNavController().navigate(R.id.libraryFragment)
         }
     }
 }

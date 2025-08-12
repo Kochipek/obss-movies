@@ -1,8 +1,8 @@
 package com.ipekkochisarli.obssmovies.features.favorites.domain.usecase
 
 import com.ipekkochisarli.obssmovies.features.favorites.domain.FavoriteRepository
-import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteListType
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
+import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import javax.inject.Inject
 
 class AddFavoriteMovieUseCase
@@ -12,6 +12,6 @@ class AddFavoriteMovieUseCase
     ) {
         suspend operator fun invoke(
             movie: FavoriteMovieUiModel,
-            listType: FavoriteListType,
+            listType: LibraryCategoryType,
         ) = repository.addFavorite(movie)
     }

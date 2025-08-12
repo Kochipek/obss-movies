@@ -2,7 +2,7 @@ package com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel
 
 import com.ipekkochisarli.obssmovies.features.favorites.data.local.entity.FavoriteMovieEntity
 
-enum class FavoriteListType {
+enum class LibraryCategoryType {
     WATCHED,
     WATCH_LATER,
 }
@@ -12,7 +12,7 @@ data class FavoriteMovieUiModel(
     val title: String,
     val posterUrl: String,
     val releaseYear: String,
-    val listType: FavoriteListType,
+    val listType: LibraryCategoryType,
 )
 
 fun FavoriteMovieUiModel.toEntity(userId: String) =
@@ -31,5 +31,5 @@ fun FavoriteMovieEntity.toDomain() =
         title = title,
         posterUrl = posterUrl,
         releaseYear = releaseYear,
-        listType = FavoriteListType.valueOf(listType),
+        listType = LibraryCategoryType.valueOf(listType),
     )

@@ -126,20 +126,20 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_profileFragment_to_favoriteMoviesFragment"
-            app:destination="@id/favoriteMoviesFragment"
+            android:id="@+id/action_profileFragment_to_libraryFragment"
+            app:destination="@id/libraryFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/favoriteMoviesFragment"
-        android:name="com.ipekkochisarli.obssmovies.features.favorites.presentation.FavoriteMoviesFragment"
+        android:id="@+id/libraryFragment"
+        android:name="com.ipekkochisarli.obssmovies.features.favorites.presentation.LibraryFragment"
         android:label="fragment_favorite_movies"
-        tools:layout="@layout/fragment_favorite_movies">
+        tools:layout="@layout/fragment_library">
         <action
-            android:id="@+id/action_favoriteMoviesFragment_to_contentDetailFragment"
+            android:id="@+id/action_libraryFragment_to_contentDetailFragment"
             app:destination="@id/contentDetailFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

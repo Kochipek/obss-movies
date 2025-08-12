@@ -6,6 +6,7 @@ import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.contentdetail.DetailSectionType
 import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.DetailSectionResult
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.ContentDetailUiModel
+import com.ipekkochisarli.obssmovies.features.contentdetail.domain.usecase.CheckFavoriteStatusUseCase
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.usecase.GetMovieDetailSectionUseCase
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.usecase.GetMovieDetailUseCase
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
@@ -27,6 +28,7 @@ class ContentDetailViewModel
         private val getMovieDetailSectionUseCase: GetMovieDetailSectionUseCase,
         private val addFavoriteMovieUseCase: AddFavoriteMovieUseCase,
         private val removeFavoriteMovieUseCase: RemoveFavoriteMovieUseCase,
+        private val checkFavoriteStatusUseCase: CheckFavoriteStatusUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(ContentDetailUiState())
         val uiState: StateFlow<ContentDetailUiState> = _uiState
@@ -35,9 +37,26 @@ class ContentDetailViewModel
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
 
-                when (val detailResult = getMovieDetailUseCase(movieId)) {
+                when (
+                    val detailResult =
+                        getMovieDetailUseCase(
+                            movieId,
+                        )
+                ) {
                     is ApiResult.Success -> {
-                        _uiState.update { it.copy(detail = detailResult.data) }
+                        val detail = detailResult.data
+
+                        val isWatchLater =
+                            checkFavoriteStatusUseCase(movieId, LibraryCategoryType.WATCH_LATER)
+                        val isWatched = checkFavoriteStatusUseCase(movieId, LibraryCategoryType.WATCHED)
+
+                        _uiState.update {
+                            it.copy(
+                                detail = detail,
+                                isWatched = isWatched,
+                                isAddedWatchLater = isWatchLater,
+                            )
+                        }
                     }
 
                     is ApiResult.Error -> {
@@ -85,35 +104,34 @@ class ContentDetailViewModel
             }
         }
 
-        fun toggleFavorite(listType: LibraryCategoryType) {
+        fun toggleWatchLater() {
             val currentDetail = _uiState.value.detail ?: return
             viewModelScope.launch {
-                when (listType) {
-                    LibraryCategoryType.WATCHED -> {
-                        if (_uiState.value.isWatched) {
-                            removeFavoriteMovieUseCase(currentDetail.id, listType)
-                            _uiState.update { it.copy(isWatched = false) }
-                        } else {
-                            addFavoriteMovieUseCase(
-                                currentDetail.toFavoriteMovieUiModel(listType),
-                                listType,
-                            )
-                            _uiState.update { it.copy(isWatched = true) }
-                        }
-                    }
+                if (_uiState.value.isAddedWatchLater) {
+                    removeFavoriteMovieUseCase(currentDetail.id, LibraryCategoryType.WATCH_LATER)
+                    _uiState.update { it.copy(isAddedWatchLater = false) }
+                } else {
+                    addFavoriteMovieUseCase(
+                        currentDetail.toFavoriteMovieUiModel(LibraryCategoryType.WATCH_LATER),
+                        LibraryCategoryType.WATCH_LATER,
+                    )
+                    _uiState.update { it.copy(isAddedWatchLater = true) }
+                }
+            }
+        }
 
-                    LibraryCategoryType.WATCH_LATER -> {
-                        if (_uiState.value.isAddedWatchLater) {
-                            removeFavoriteMovieUseCase(currentDetail.id, listType)
-                            _uiState.update { it.copy(isAddedWatchLater = false) }
-                        } else {
-                            addFavoriteMovieUseCase(
-                                currentDetail.toFavoriteMovieUiModel(listType),
-                                listType,
-                            )
-                            _uiState.update { it.copy(isAddedWatchLater = true) }
-                        }
-                    }
+        fun toggleWatched() {
+            val currentDetail = _uiState.value.detail ?: return
+            viewModelScope.launch {
+                if (_uiState.value.isWatched) {
+                    removeFavoriteMovieUseCase(currentDetail.id, LibraryCategoryType.WATCHED)
+                    _uiState.update { it.copy(isWatched = false) }
+                } else {
+                    addFavoriteMovieUseCase(
+                        currentDetail.toFavoriteMovieUiModel(LibraryCategoryType.WATCHED),
+                        LibraryCategoryType.WATCHED,
+                    )
+                    _uiState.update { it.copy(isWatched = true) }
                 }
             }
         }

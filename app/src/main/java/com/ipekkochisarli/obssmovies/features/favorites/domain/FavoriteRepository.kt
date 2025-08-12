@@ -7,9 +7,15 @@ import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCa
 interface FavoriteRepository {
     suspend fun addFavorite(movie: FavoriteMovieUiModel)
 
-    suspend fun removeFavorite(movieId: Int)
+    suspend fun removeFavorite(
+        movieId: Int,
+        listType: LibraryCategoryType,
+    )
 
     suspend fun getFavoritesByListType(listType: LibraryCategoryType): ApiResult<List<FavoriteMovieUiModel>>
 
-    suspend fun isFavorite(movieId: Int): Boolean
+    suspend fun isFavorite(
+        movieId: Int,
+        listType: LibraryCategoryType,
+    ): Boolean
 }

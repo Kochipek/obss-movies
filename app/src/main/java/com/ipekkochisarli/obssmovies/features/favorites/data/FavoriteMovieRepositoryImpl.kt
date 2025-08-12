@@ -22,9 +22,12 @@ class FavoriteRepositoryImpl
             dao.insertFavorite(movie.toEntity(userId))
         }
 
-        override suspend fun removeFavorite(movieId: Int) {
+        override suspend fun removeFavorite(
+            movieId: Int,
+            listType: LibraryCategoryType,
+        ) {
             val userId = authRepository.getCurrentUserId() ?: return
-            dao.deleteFavorite(movieId, userId)
+            dao.deleteFavorite(movieId, userId, listType.name)
         }
 
         override suspend fun getFavoritesByListType(listType: LibraryCategoryType): ApiResult<List<FavoriteMovieUiModel>> =
@@ -39,7 +42,10 @@ class FavoriteRepositoryImpl
                 ApiResult.Error(AppError.fromException(e))
             }
 
-        override suspend fun isFavorite(movieId: Int): Boolean {
+        override suspend fun isFavorite(
+            movieId: Int,
+            listType: LibraryCategoryType,
+        ): Boolean {
             val userId = authRepository.getCurrentUserId() ?: return false
             return dao.isFavorite(movieId, userId)
         }

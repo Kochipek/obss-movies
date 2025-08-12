@@ -3,6 +3,7 @@ package com.ipekkochisarli.obssmovies.features.favorites.di
 import android.content.Context
 import androidx.room.Room
 import com.ipekkochisarli.obssmovies.core.data.MovieDb
+import com.ipekkochisarli.obssmovies.features.contentdetail.domain.usecase.CheckFavoriteStatusUseCase
 import com.ipekkochisarli.obssmovies.features.favorites.data.FavoriteRepositoryImpl
 import com.ipekkochisarli.obssmovies.features.favorites.data.local.dao.FavoriteMovieDao
 import com.ipekkochisarli.obssmovies.features.favorites.domain.FavoriteRepository
@@ -28,8 +29,16 @@ object FavoriteDatabaseModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context,
-    ): MovieDb = Room.databaseBuilder(context, MovieDb::class.java, "movie_db").build()
+    ): MovieDb =
+        Room
+            .databaseBuilder(context, MovieDb::class.java, "movie_db")
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     fun provideFavoriteMovieDao(db: MovieDb): FavoriteMovieDao = db.favoriteMovieDao()
+
+    @Provides
+    fun provideCheckFavoriteStatusUseCase(favoritesRepository: FavoriteRepository): CheckFavoriteStatusUseCase =
+        CheckFavoriteStatusUseCase(favoritesRepository)
 }

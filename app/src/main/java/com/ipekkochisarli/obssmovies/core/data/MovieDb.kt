@@ -7,7 +7,7 @@ import com.ipekkochisarli.obssmovies.features.favorites.data.local.entity.Favori
 
 @Database(
     entities = [FavoriteMovieEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class MovieDb : RoomDatabase() {

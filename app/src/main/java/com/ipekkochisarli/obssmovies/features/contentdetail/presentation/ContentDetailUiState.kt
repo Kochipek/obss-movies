@@ -12,6 +12,6 @@ data class ContentDetailUiState(
     val similar: List<MovieUiModel> = emptyList(),
     val message: String = "",
     val isLoading: Boolean = false,
-    val isWatched: Boolean = false,
     val isAddedWatchLater: Boolean = false,
+    val isWatched: Boolean = false,
 )

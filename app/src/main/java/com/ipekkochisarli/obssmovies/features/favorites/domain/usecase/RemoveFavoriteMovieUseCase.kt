@@ -12,5 +12,5 @@ class RemoveFavoriteMovieUseCase
         suspend operator fun invoke(
             movieId: Int,
             listType: LibraryCategoryType,
-        ) = repository.removeFavorite(movieId)
+        ) = repository.removeFavorite(movieId, listType)
     }

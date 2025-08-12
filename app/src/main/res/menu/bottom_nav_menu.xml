@@ -5,8 +5,14 @@
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_menu_home"
         app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/searchFragment"
         android:icon="@drawable/ic_search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/libraryFragment"
+        android:icon="@drawable/ic_library"
         app:showAsAction="ifRoom" />
 </menu>

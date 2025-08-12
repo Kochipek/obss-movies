@@ -62,4 +62,15 @@
     <string name="watched_toast">%1$s added to Watched</string>
     <string name="rating_format">Rating: %1$s / 10</string>
     <string name="logout">Logout</string>
+    <string name="library">Library</string>
+    <string name="go_to_library">Go to Library</string>
+    <string name="watch_later_removed_toast">%1$s removed from Watch Later</string>
+    <string name="watched_removed_toast">%1$s removed from Watched</string>
+    <string name="watched_movies">Watched Movies</string>
+    <string name="watch_later_movies">Watch Later Movies</string>
+    <string name="no_watched_movies">You have no watched movies yet.</string>
+    <string name="no_watch_later_movies">You have no movies in your Watch Later list.</string>
+    <string name="watch">Watch</string>
+    <string name="watch_later">Watch Later</string>
+    <string name="watched">Watched\n</string>
 </resources>

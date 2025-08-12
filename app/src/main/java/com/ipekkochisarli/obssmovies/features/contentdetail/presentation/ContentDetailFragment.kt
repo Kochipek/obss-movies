@@ -8,11 +8,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentContentDetailBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailAdapter
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailItem
+import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -46,61 +48,42 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
     }
 
     private fun setupListeners() {
-        adapter.onActionClicked = { detail, menuItemId ->
-            when (menuItemId) {
-                R.id.action_add_to_watch_later -> {
-                    // TODO: Implement "add to watch later"
-                }
-
-                R.id.action_add_to_watched -> {
-                    // TODO: Implement "add to watched"
-                }
-            }
-        }
-
         adapter.onShareClicked = { text ->
             shareText(text)
         }
-
         adapter.onVideoClicked = { videoUrl ->
             navigateToVideoUrl(videoUrl)
         }
-
         adapter.onSimilarMovieClick = { movie ->
             navigateToMovieDetail(movie.id)
         }
-    }
-
-    private fun navigateToVideoUrl(url: String) {
-        val intent =
-            Intent(Intent.ACTION_VIEW).apply {
-                data = url.toUri()
+        adapter.onWatchLaterClicked = {
+            viewModel.toggleWatchLater()
+            viewModel.uiState.value.detail?.let { detail ->
+                showListActionMessage(
+                    detail.title,
+                    R.string.watch_later_toast,
+                    R.string.watch_later_removed_toast,
+                    !viewModel.uiState.value.isAddedWatchLater,
+                )
             }
-        startActivity(intent)
-    }
+        }
 
-    private fun navigateToMovieDetail(movieId: Int) {
-        // bundle
-        val bundle =
-            Bundle().apply {
-                putInt(MOVIE_ID, movieId)
+        adapter.onWatchedClicked = {
+            viewModel.toggleWatched()
+            viewModel.uiState.value.detail?.let { detail ->
+                showListActionMessage(
+                    detail.title,
+                    R.string.watched_toast,
+                    R.string.watched_removed_toast,
+                    !viewModel.uiState.value.isWatched,
+                )
             }
-        findNavController().navigate(R.id.contentDetailFragment, bundle)
-    }
-
-    private fun shareText(text: String) {
-        val shareIntent =
-            Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, text)
-                type = "text/plain"
-            }
-        val chooser = Intent.createChooser(shareIntent, getString(R.string.share))
-        startActivity(chooser)
+        }
     }
 
     private fun observeUiState() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 val items = mutableListOf<ContentDetailItem>()
 
@@ -119,10 +102,52 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
                 if (state.similar.isNotEmpty()) {
                     items.add(ContentDetailItem.SectionSimilarMovies(state.similar))
                 }
-
-                adapter.submitList(items)
+                adapter.submitList(items, state.isAddedWatchLater, state.isWatched)
                 binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
             }
         }
+    }
+
+    private fun navigateToVideoUrl(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW).apply { data = url.toUri() }
+        startActivity(intent)
+    }
+
+    private fun navigateToMovieDetail(movieId: Int) {
+        val bundle = Bundle().apply { putInt(MOVIE_ID, movieId) }
+        findNavController().navigate(R.id.contentDetailFragment, bundle)
+    }
+
+    private fun showListActionMessage(
+        movieTitle: String,
+        addResId: Int,
+        removeResId: Int,
+        added: Boolean,
+    ) {
+        val message =
+            if (added) {
+                getString(addResId, movieTitle)
+            } else {
+                getString(removeResId, movieTitle)
+            }
+
+        Snackbar
+            .make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setTextColor(requireContext().getColor(android.R.color.white))
+            .setActionTextColor(requireContext().getColor(android.R.color.holo_red_dark))
+            .setAction(getString(R.string.go_to_library)) {
+                findNavController().navigate(R.id.libraryFragment)
+            }.show()
+    }
+
+    private fun shareText(text: String) {
+        val shareIntent =
+            Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, text)
+                type = "text/plain"
+            }
+        val chooser = Intent.createChooser(shareIntent, getString(R.string.share))
+        startActivity(chooser)
     }
 }

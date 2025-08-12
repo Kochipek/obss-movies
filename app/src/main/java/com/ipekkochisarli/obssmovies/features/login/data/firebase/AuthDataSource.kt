@@ -24,4 +24,6 @@ interface AuthDataSource {
     suspend fun signOut(): ApiResult<Unit>
 
     suspend fun isUserLoggedIn(): ApiResult<Boolean>
+
+    suspend fun getCurrentUserId(): String?
 }

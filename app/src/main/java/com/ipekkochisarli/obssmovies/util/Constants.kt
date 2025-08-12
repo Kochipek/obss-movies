@@ -6,4 +6,5 @@ object Constants {
     const val MOVIE_ID = "movie_id"
     const val YOUTUBE_THUMBNAIL_BASE_URL = "https://img.youtube.com/vi/"
     const val YOUTUBE_VIDEO_BASE_URL = "https://www.youtube.com/watch?v="
+    const val ARG_LIST_TYPE = "arg_list_type"
 }

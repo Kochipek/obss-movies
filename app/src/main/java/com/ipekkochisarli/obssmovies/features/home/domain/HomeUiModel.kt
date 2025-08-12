@@ -10,7 +10,7 @@ data class MovieUiModel(
     val title: String,
     val posterUrl: String,
     val releaseYear: String,
-    val voteAverage: String,
+    val voteAverage: String? = null,
     val carouselUrl: String? = null,
     val description: String? = null,
     val viewType: MovieViewType? = null,

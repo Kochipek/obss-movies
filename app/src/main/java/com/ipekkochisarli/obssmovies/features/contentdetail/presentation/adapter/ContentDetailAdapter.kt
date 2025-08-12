@@ -34,10 +34,16 @@ sealed class ContentDetailItem {
 
 class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = mutableListOf<ContentDetailItem>()
-    var onActionClicked: ((ContentDetailUiModel, Int) -> Unit)? = null
+
     var onShareClicked: ((String) -> Unit)? = null
-    var onVideoClicked: ((videoUrl: String) -> Unit)? = null
+    var onVideoClicked: ((String) -> Unit)? = null
     var onSimilarMovieClick: ((MovieUiModel) -> Unit)? = null
+
+    var onWatchLaterClicked: (() -> Unit)? = null
+    var onWatchedClicked: (() -> Unit)? = null
+
+    var isAddedWatchLater = false
+    var isWatched = false
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -46,9 +52,15 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private const val TYPE_SIMILAR = 3
     }
 
-    fun submitList(newItems: List<ContentDetailItem>) {
+    fun submitList(
+        newItems: List<ContentDetailItem>,
+        watchLater: Boolean,
+        watched: Boolean,
+    ) {
         items.clear()
         items.addAll(newItems)
+        isAddedWatchLater = watchLater
+        isWatched = watched
         notifyDataSetChanged()
     }
 
@@ -74,7 +86,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         parent,
                         false,
                     )
-                HeaderViewHolder(binding, onActionClicked, onShareClicked)
+                HeaderViewHolder(binding, onShareClicked, onWatchLaterClicked, onWatchedClicked)
             }
 
             TYPE_CAST -> {
@@ -117,7 +129,13 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         position: Int,
     ) {
         when (val item = items[position]) {
-            is ContentDetailItem.Header -> (holder as HeaderViewHolder).bind(item.detail)
+            is ContentDetailItem.Header ->
+                (holder as HeaderViewHolder).bind(
+                    item.detail,
+                    isAddedWatchLater,
+                    isWatched,
+                )
+
             is ContentDetailItem.SectionCast -> (holder as CastSectionViewHolder).bind(item.castList)
             is ContentDetailItem.SectionVideos -> (holder as VideoSectionViewHolder).bind(item.videoList)
             is ContentDetailItem.SectionSimilarMovies ->

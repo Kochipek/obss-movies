@@ -8,29 +8,39 @@ import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteL
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.toDomain
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.toEntity
+import com.ipekkochisarli.obssmovies.features.login.domain.AuthRepository
 import javax.inject.Inject
 
 class FavoriteRepositoryImpl
     @Inject
     constructor(
         private val dao: FavoriteMovieDao,
+        private val authRepository: AuthRepository,
     ) : FavoriteRepository {
         override suspend fun addFavorite(movie: FavoriteMovieUiModel) {
-            dao.insertFavorite(movie.toEntity())
+            val userId = authRepository.getCurrentUserId() ?: return
+            dao.insertFavorite(movie.toEntity(userId))
         }
 
         override suspend fun removeFavorite(movieId: Int) {
-            dao.deleteFavorite(movieId)
+            val userId = authRepository.getCurrentUserId() ?: return
+            dao.deleteFavorite(movieId, userId)
         }
 
         override suspend fun getFavoritesByListType(listType: FavoriteListType): ApiResult<List<FavoriteMovieUiModel>> =
             try {
-                val entities = dao.getFavoritesByListType(listType.name)
-                val movies = entities.map { it.toDomain() }
-                ApiResult.Success(movies)
+                val userId =
+                    authRepository.getCurrentUserId()
+                        ?: return ApiResult.Error(AppError.AuthError.UserNotFound)
+
+                val entities = dao.getFavoritesByListType(listType.name, userId)
+                ApiResult.Success(entities.map { it.toDomain() })
             } catch (e: Exception) {
                 ApiResult.Error(AppError.fromException(e))
             }
 
-        override suspend fun isFavorite(movieId: Int): Boolean = dao.isFavorite(movieId)
+        override suspend fun isFavorite(movieId: Int): Boolean {
+            val userId = authRepository.getCurrentUserId() ?: return false
+            return dao.isFavorite(movieId, userId)
+        }
     }

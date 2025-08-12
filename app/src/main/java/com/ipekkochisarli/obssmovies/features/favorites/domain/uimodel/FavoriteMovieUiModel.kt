@@ -15,13 +15,14 @@ data class FavoriteMovieUiModel(
     val listType: FavoriteListType,
 )
 
-fun FavoriteMovieUiModel.toEntity() =
+fun FavoriteMovieUiModel.toEntity(userId: String) =
     FavoriteMovieEntity(
-        id = id,
-        title = title,
-        posterUrl = posterUrl,
-        releaseYear = releaseYear,
-        listType = listType.name,
+        id = this.id,
+        title = this.title,
+        listType = this.listType.name,
+        userId = userId,
+        posterUrl = this.posterUrl,
+        releaseYear = this.releaseYear,
     )
 
 fun FavoriteMovieEntity.toDomain() =

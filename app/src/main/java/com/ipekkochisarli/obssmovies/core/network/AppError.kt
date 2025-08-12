@@ -15,9 +15,7 @@ sealed class AppError(
             override val message: String,
         ) : AuthError(message)
 
-        data class UserNotFound(
-            override val message: String,
-        ) : AuthError(message)
+        object UserNotFound : AuthError("User not found")
 
         data class AccountDisabled(
             override val message: String,

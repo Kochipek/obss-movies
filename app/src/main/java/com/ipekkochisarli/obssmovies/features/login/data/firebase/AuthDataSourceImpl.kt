@@ -44,7 +44,7 @@ class AuthDataSourceImpl
         override suspend fun getCurrentUser(): ApiResult<FirebaseUser> =
             firebaseAuth.currentUser?.let {
                 ApiResult.Success(it)
-            } ?: ApiResult.Error(AppError.AuthError.UserNotFound("User is not logged in"))
+            } ?: ApiResult.Error(AppError.AuthError.UserNotFound)
 
         override suspend fun signOut(): ApiResult<Unit> =
             safeCall {
@@ -55,6 +55,8 @@ class AuthDataSourceImpl
             safeCall {
                 firebaseAuth.currentUser != null
             }
+
+        override suspend fun getCurrentUserId(): String? = firebaseAuth.currentUser?.uid
 
         override suspend fun loginWithGoogle(idToken: String): ApiResult<FirebaseUser> =
             safeCall {
@@ -74,7 +76,7 @@ class AuthDataSourceImpl
             } catch (e: FirebaseAuthInvalidCredentialsException) {
                 ApiResult.Error(AppError.AuthError.InvalidCredentials("Invalid credentials"))
             } catch (e: FirebaseAuthInvalidUserException) {
-                ApiResult.Error(AppError.AuthError.UserNotFound("User not found"))
+                ApiResult.Error(AppError.AuthError.UserNotFound)
             } catch (e: FirebaseAuthException) {
                 ApiResult.Error(AppError.AuthError.UnknownAuthError(e.localizedMessage ?: "Auth error"))
             } catch (e: Exception) {

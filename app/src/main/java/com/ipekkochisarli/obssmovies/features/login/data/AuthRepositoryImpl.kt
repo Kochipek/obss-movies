@@ -48,5 +48,17 @@ class AuthRepositoryImpl
             return result
         }
 
-        override suspend fun checkIfEmailExists(email: String): ApiResult<Boolean> = authenticationDataSource.checkIfEmailExists(email)
+        override suspend fun checkIfEmailExists(email: String) = authenticationDataSource.checkIfEmailExists(email)
+
+        override suspend fun getCurrentUser() = authenticationDataSource.getCurrentUser()
+
+        override suspend fun signOut() = authenticationDataSource.signOut()
+
+        override suspend fun isUserLoggedIn() = authenticationDataSource.isUserLoggedIn()
+
+        override suspend fun getCurrentUserId(): String? =
+            when (val result = authenticationDataSource.getCurrentUser()) {
+                is ApiResult.Success -> result.data.uid
+                else -> null
+            }
     }

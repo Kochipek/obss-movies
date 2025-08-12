@@ -18,4 +18,12 @@ interface AuthRepository {
     suspend fun loginWithGoogle(idToken: String): ApiResult<FirebaseUser>
 
     suspend fun checkIfEmailExists(email: String): ApiResult<Boolean>
+
+    suspend fun getCurrentUser(): ApiResult<FirebaseUser>
+
+    suspend fun signOut(): ApiResult<Unit>
+
+    suspend fun isUserLoggedIn(): ApiResult<Boolean>
+
+    suspend fun getCurrentUserId(): String?
 }

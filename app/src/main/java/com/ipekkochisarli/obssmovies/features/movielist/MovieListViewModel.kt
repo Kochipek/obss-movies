@@ -3,6 +3,7 @@ package com.ipekkochisarli.obssmovies.features.movielist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ipekkochisarli.obssmovies.common.MovieViewType
+import com.ipekkochisarli.obssmovies.core.data.PreferencesManager
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
@@ -24,21 +25,23 @@ class MovieListViewModel
         private val addFavoriteMovieUseCase: AddFavoriteMovieUseCase,
         private val removeFavoriteMovieUseCase: RemoveFavoriteMovieUseCase,
         private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
+        private val preferencesManager: PreferencesManager,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(MovieListUiState(viewType = MovieViewType.LIST))
         val uiState = _uiState.asStateFlow()
 
         private var currentViewType = MovieViewType.LIST
 
-        fun setMovieList(list: List<MovieUiModel>) {
+        val isGuest = !preferencesManager.isUserLoggedIn()
+
+        fun setMovieList(list: List<MovieUiModel>) =
             viewModelScope.launch {
-                val updatedList =
-                    list.map {
-                        it.copy(isAddedWatchLater = isMovieInWatchLater(it.id))
-                    }
+                val watchLaterIds =
+                    (getFavoriteMoviesUseCase(LibraryCategoryType.WATCH_LATER) as? ApiResult.Success)?.data?.map { it.id }
+                        ?: emptyList()
+                val updatedList = list.map { it.copy(isAddedWatchLater = it.id in watchLaterIds) }
                 _uiState.update { it.copy(results = updatedList) }
             }
-        }
 
         fun toggleViewType() {
             currentViewType =
@@ -91,8 +94,3 @@ class MovieListViewModel
                 description = description.orEmpty(),
             )
     }
-
-data class MovieListUiState(
-    val results: List<MovieUiModel> = emptyList(),
-    val viewType: MovieViewType = MovieViewType.LIST,
-)

@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.common.CustomLoadingDialog
+import com.ipekkochisarli.obssmovies.common.ErrorDialog
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentLoginBinding
 import com.ipekkochisarli.obssmovies.features.login.GoogleAuthClient
@@ -26,6 +28,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
     private lateinit var googleAuthClient: GoogleAuthClient
     private var isLoginMode = true
+
+    private val loadingDialog: CustomLoadingDialog by lazy {
+        CustomLoadingDialog(requireContext())
+    }
 
     private val googleSignInLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -174,6 +180,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.authState.collectLatest { state ->
+
+                loadingDialog.showLoading(state.isLoading)
+
+                if (state.errorMessage != null) {
+                    ErrorDialog.show(parentFragmentManager, state.errorMessage)
+                }
 
                 binding.checkboxRememberMe.isChecked = state.isRememberMeEnabled
                 if (binding.etEmail.text.toString() != state.savedEmail) {

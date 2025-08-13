@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.common.CustomLoadingDialog
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentContentDetailBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.ContentDetailAdapter
@@ -24,6 +25,10 @@ import kotlinx.coroutines.launch
 class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(FragmentContentDetailBinding::inflate) {
     private val viewModel: ContentDetailViewModel by viewModels()
     private val adapter by lazy { ContentDetailAdapter() }
+
+    private val loadingDialog: CustomLoadingDialog by lazy {
+        CustomLoadingDialog(requireContext())
+    }
 
     override fun onViewCreated(
         view: View,
@@ -87,6 +92,8 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
             viewModel.uiState.collectLatest { state ->
                 val items = mutableListOf<ContentDetailItem>()
 
+                loadingDialog.showLoading(state.isLoading)
+
                 state.detail?.let {
                     items.add(ContentDetailItem.Header(it))
                 }
@@ -136,7 +143,9 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
             .setTextColor(requireContext().getColor(android.R.color.white))
             .setActionTextColor(requireContext().getColor(android.R.color.holo_red_dark))
             .setAction(getString(R.string.go_to_library)) {
-                findNavController().navigate(R.id.libraryFragment)
+                if (isAdded) {
+                    findNavController().navigate(R.id.action_contentDetailFragment_to_libraryFragment)
+                }
             }.show()
     }
 

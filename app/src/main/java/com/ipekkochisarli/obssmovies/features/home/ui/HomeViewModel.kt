@@ -38,32 +38,63 @@ class HomeViewModel
         fun loadMovies() {
             viewModelScope.launch {
                 val sections = HomeSectionType.entries.toList()
+
+                _uiStates.value =
+                    sections.map { section ->
+                        HomeUiState(
+                            type = section,
+                            title = section.name,
+                            movies = emptyList(),
+                            isLoading = true,
+                        )
+                    }
+
+                val watchLaterIds =
+                    (getFavoriteMoviesUseCase(LibraryCategoryType.WATCH_LATER) as? ApiResult.Success)
+                        ?.data
+                        ?.map { it.id } ?: emptyList()
+
                 val states =
                     sections.map { section ->
                         when (val result = getMovieListBySectionUseCase(section)) {
-                            is ApiResult.Success -> mapToHomeUiState(section, result.data)
+                            is ApiResult.Success ->
+                                mapToHomeUiState(
+                                    section,
+                                    result.data,
+                                    watchLaterIds,
+                                    isLoading = false,
+                                )
+
                             is ApiResult.Error ->
                                 HomeUiState(
                                     type = section,
                                     title = section.name,
                                     movies = emptyList(),
                                     carouselImages = emptyList(),
+                                    isLoading = false,
+                                    error = result.exception.message,
                                 )
                         }
                     }
 
                 _uiStates.value = states
-
-                states.forEach { state ->
-                    state.movies.forEach { movie ->
-                        loadFavoriteStatuses(movie.id)
-                    }
-                }
             }
         }
 
         fun toggleWatchlist(movieId: Int) {
             val movie = _uiStates.value.flatMap { it.movies }.find { it.id == movieId } ?: return
+
+            _uiStates.update { states ->
+                states.map { state ->
+                    state.copy(
+                        movies =
+                            state.movies.map { movieInState ->
+                                toggleMovieWatchLater(movieInState, movieId)
+                            },
+                    )
+                }
+            }
+
             viewModelScope.launch {
                 val listType = LibraryCategoryType.WATCH_LATER
                 val favoriteMovie = movie.toFavoriteMovieUiModel(listType)
@@ -73,45 +104,18 @@ class HomeViewModel
                 } else {
                     addFavoriteMovieUseCase(favoriteMovie, listType)
                 }
-
-                loadFavoriteStatuses(movieId)
             }
         }
 
-        fun loadFavoriteStatuses(movieId: Int) {
-            viewModelScope.launch {
-                val watchLaterResult = getFavoriteMoviesUseCase(LibraryCategoryType.WATCH_LATER)
-                val isWatchLater =
-                    (watchLaterResult as? ApiResult.Success)?.data?.any { it.id == movieId } ?: false
-
-                _uiStates.update { states ->
-                    states.map { state ->
-                        state.copy(
-                            movies =
-                                state.movies.map { movie ->
-                                    if (movie.id == movieId) {
-                                        movie.copy(isAddedWatchLater = isWatchLater)
-                                    } else {
-                                        movie
-                                    }
-                                },
-                        )
-                    }
-                }
+        private fun toggleMovieWatchLater(
+            movie: MovieUiModel,
+            movieId: Int,
+        ): MovieUiModel =
+            if (movie.id == movieId) {
+                movie.copy(isAddedWatchLater = !movie.isAddedWatchLater)
+            } else {
+                movie
             }
-        }
-
-        private var currentViewType = MovieViewType.LIST
-
-        fun toggleViewType() {
-            currentViewType =
-                when (currentViewType) {
-                    MovieViewType.LIST -> MovieViewType.GRID
-                    MovieViewType.GRID -> MovieViewType.LIST
-                    else -> MovieViewType.LIST
-                }
-            _uiStates.update { it.map { state -> state.copy(viewType = currentViewType) } }
-        }
 
         private fun MovieUiModel.toFavoriteMovieUiModel(listType: LibraryCategoryType) =
             FavoriteMovieUiModel(
@@ -126,10 +130,12 @@ class HomeViewModel
         private fun mapToHomeUiState(
             section: HomeSectionType,
             movies: List<MovieUiModel>,
+            watchLaterIds: List<Int>,
+            isLoading: Boolean,
         ): HomeUiState {
             val carouselImages =
                 if (section == HomeSectionType.NOW_PLAYING) {
-                    movies.take(3).mapNotNull { it.carouselUrl?.takeIf { url -> url.isNotBlank() } }
+                    movies.take(3).mapNotNull { it.carouselUrl?.takeIf(String::isNotBlank) }
                 } else {
                     emptyList()
                 }
@@ -137,8 +143,9 @@ class HomeViewModel
             return HomeUiState(
                 type = section,
                 title = section.name,
-                movies = movies,
+                movies = movies.map { it.copy(isAddedWatchLater = watchLaterIds.contains(it.id)) },
                 carouselImages = carouselImages,
+                isLoading = isLoading,
             )
         }
     }

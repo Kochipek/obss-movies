@@ -3,9 +3,9 @@ package com.ipekkochisarli.obssmovies.features.home.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil3.load
 import com.ipekkochisarli.obssmovies.common.CarouselItem
 import com.ipekkochisarli.obssmovies.databinding.ItemCarouselMovieBinding
+import com.ipekkochisarli.obssmovies.util.extensions.loadImage
 
 class CarouselPagerAdapter(
     private var items: List<CarouselItem>,
@@ -16,7 +16,7 @@ class CarouselPagerAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CarouselItem) {
             binding.apply {
-                imagePoster.load(item.imageUrl)
+                imagePoster.loadImage(item.imageUrl)
                 tvTitle.text = item.title
                 tvReleaseDate.text = item.releaseYear
 

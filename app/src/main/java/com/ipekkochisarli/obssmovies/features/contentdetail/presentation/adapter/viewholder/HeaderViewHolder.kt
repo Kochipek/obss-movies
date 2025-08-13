@@ -6,6 +6,7 @@ import coil3.request.crossfade
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.databinding.ItemContentDetailHeaderBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.ContentDetailUiModel
+import com.ipekkochisarli.obssmovies.util.extensions.loadImage
 
 class HeaderViewHolder(
     private val binding: ItemContentDetailHeaderBinding,
@@ -20,13 +21,8 @@ class HeaderViewHolder(
     ) = with(binding) {
         val context = root.context
 
-        posterImage.load(detail.posterUrl) {
-            crossfade(true)
-        }
-
-        backgroundPosterImage.load(detail.backdropUrl) {
-            crossfade(true)
-        }
+        posterImage.loadImage(detail.posterUrl)
+        backgroundPosterImage.loadImage(detail.backdropUrl)
 
         titleText.text = detail.title
         taglineText.text = detail.tagline.takeIf { it.isNotBlank() } ?: ""

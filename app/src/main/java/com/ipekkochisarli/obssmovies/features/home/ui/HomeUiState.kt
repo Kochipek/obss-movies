@@ -10,4 +10,6 @@ data class HomeUiState(
     val movies: List<MovieUiModel>,
     val carouselImages: List<String> = emptyList(),
     val viewType: MovieViewType = MovieViewType.LIST,
+    val isLoading: Boolean = false,
+    val error: String? = null,
 )

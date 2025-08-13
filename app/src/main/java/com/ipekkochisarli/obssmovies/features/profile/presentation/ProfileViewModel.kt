@@ -25,13 +25,26 @@ class ProfileViewModel
 
         private fun loadUserData() {
             viewModelScope.launch {
-                _uiState.value =
-                    ProfileUiState(
-                        email = preferencesManager.getSavedEmail(),
-                        username =
-                            preferencesManager.getSavedUsername()
-                                ?: preferencesManager.getSavedEmail()?.substringBefore("@"),
-                    )
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+                try {
+                    val email = preferencesManager.getSavedEmail()
+                    val username =
+                        preferencesManager.getSavedUsername()
+                            ?: email?.substringBefore("@")
+
+                    _uiState.value =
+                        ProfileUiState(
+                            email = email,
+                            username = username,
+                            isLoading = false,
+                        )
+                } catch (e: Exception) {
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isLoading = false,
+                            error = e.message,
+                        )
+                }
             }
         }
 

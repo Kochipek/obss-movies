@@ -6,11 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import coil3.load
-import coil3.request.crossfade
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.CastUiModel
+import com.ipekkochisarli.obssmovies.util.extensions.loadImage
 
 class CastAdapter :
     BaseListAdapter<CastUiModel>(
@@ -38,9 +37,7 @@ class CastAdapter :
         private val castName: TextView = itemView.findViewById(R.id.castName)
 
         fun bind(cast: CastUiModel) {
-            castImage.load(cast.profileImageUrl) {
-                crossfade(true)
-            }
+            castImage.loadImage(cast.profileImageUrl)
             castName.text = cast.name
         }
     }

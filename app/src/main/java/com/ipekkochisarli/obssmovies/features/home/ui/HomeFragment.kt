@@ -2,6 +2,7 @@ package com.ipekkochisarli.obssmovies.features.home.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -9,6 +10,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.common.CustomLoadingDialog
+import com.ipekkochisarli.obssmovies.common.ErrorDialog
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentHomeBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
@@ -29,6 +32,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private lateinit var categoryAdapter: CategorySectionAdapter
     private lateinit var carouselAdapter: CarouselPagerAdapter
+
+    private val loadingDialog: CustomLoadingDialog by lazy {
+        CustomLoadingDialog(requireContext())
+    }
 
     override fun onViewCreated(
         view: View,
@@ -54,7 +61,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     navigateToContentDetail(movie.id)
                 },
                 onFavoriteClick = { movie ->
-                    viewModel.toggleWatchlist(movie.id)
+                    if (viewModel.isGuest) {
+                        ErrorDialog.show(
+                            parentFragmentManager,
+                            getString(R.string.login_required_message),
+                        )
+                    } else {
+                        viewModel.toggleWatchlist(movie.id)
+                    }
                 },
             )
         binding.recyclerViewSections.apply {
@@ -86,13 +100,29 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiStates.collect { states ->
+
+                    val isLoading = states.any { it.isLoading }
+                    loadingDialog.showLoading(isLoading)
+
                     val nowPlayingSection = states.find { it.type == HomeSectionType.NOW_PLAYING }
                     val carouselItems = nowPlayingSection?.movies?.toCarouselItems()
                     carouselItems?.let { carouselAdapter.updateItems(it) }
 
                     categoryAdapter.submitList(states)
+
+                    val firstErrorState = states.firstOrNull { it.error != null }
+                    firstErrorState?.let { showErrorDialog(it) }
                 }
             }
+        }
+    }
+
+    private fun showErrorDialog(uiState: HomeUiState) {
+        uiState.error?.let { errorMessage ->
+            ErrorDialog(
+                message = errorMessage,
+                onButtonClick = { viewModel.loadMovies() },
+            ).show(parentFragmentManager, "ErrorDialog")
         }
     }
 

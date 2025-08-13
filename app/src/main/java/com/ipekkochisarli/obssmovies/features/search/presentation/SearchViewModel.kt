@@ -3,6 +3,7 @@ package com.ipekkochisarli.obssmovies.features.search.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ipekkochisarli.obssmovies.common.MovieViewType
+import com.ipekkochisarli.obssmovies.core.data.PreferencesManager
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType
@@ -31,11 +32,14 @@ class SearchViewModel
         private val addFavoriteMovieUseCase: AddFavoriteMovieUseCase,
         private val removeFavoriteMovieUseCase: RemoveFavoriteMovieUseCase,
         private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
+        private val preferencesManager: PreferencesManager,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(SearchUiState())
         val uiState = _uiState.asStateFlow()
 
         private var searchJob: Job? = null
+
+        val isGuest = !preferencesManager.isUserLoggedIn()
 
         init {
             loadPopularMovies()

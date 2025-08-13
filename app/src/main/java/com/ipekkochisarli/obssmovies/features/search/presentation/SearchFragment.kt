@@ -8,6 +8,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.common.CustomLoadingDialog
+import com.ipekkochisarli.obssmovies.common.ErrorDialog
 import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentSearchBinding
@@ -24,6 +26,10 @@ import kotlinx.coroutines.launch
 class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding::inflate) {
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var adapter: MovieListAdapter
+
+    private val loadingDialog: CustomLoadingDialog by lazy {
+        CustomLoadingDialog(requireContext())
+    }
 
     override fun onViewCreated(
         view: View,
@@ -42,7 +48,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
             MovieListAdapter(
                 viewType = viewModel.uiState.value.viewType,
                 onMovieClick = { navigateToContentDetail(it.id) },
-                onFavoriteClick = { viewModel.toggleWatchlist(it.id) },
+                onFavoriteClick = { movie ->
+                    if (viewModel.isGuest) {
+                        ErrorDialog.show(
+                            parentFragmentManager,
+                            getString(R.string.login_required_message),
+                        )
+                    } else {
+                        viewModel.toggleWatchlist(movie.id)
+                    }
+                },
                 showFavoriteIcon = true,
             )
         binding.rvSearchList.adapter = adapter
@@ -67,7 +82,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
-                    updateTitle(state.query)
+
+                    loadingDialog.showLoading(state.isLoading)
+
+                    if (state.error != null) {
+                        ErrorDialog.show(parentFragmentManager, state.error)
+                    }
+
                     updateAdapter(state.results)
                     updateViewType(state.viewType)
                     updateEmptyState(state.results.isEmpty())

@@ -8,6 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.common.CustomLoadingDialog
+import com.ipekkochisarli.obssmovies.common.ErrorDialog
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentProfileBinding
 import com.ipekkochisarli.obssmovies.features.profile.ProfileUiState
@@ -17,6 +19,10 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     private val viewModel: ProfileViewModel by viewModels()
+
+    private val loadingDialog: CustomLoadingDialog by lazy {
+        CustomLoadingDialog(requireContext())
+    }
 
     override fun onViewCreated(
         view: View,
@@ -32,6 +38,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state: ProfileUiState ->
+                    if (state.error !== null) {
+                        ErrorDialog.show(parentFragmentManager, state.error)
+                    }
+                    loadingDialog.showLoading(state.isLoading)
                     binding.textViewEmail.text = state.email
                     binding.textViewUsername.text = state.username
                 }

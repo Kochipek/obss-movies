@@ -51,6 +51,9 @@ class LibraryTabFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSave
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { movies ->
                 adapter.submitList(movies)
+                binding.tvEmptyState.visibility = if (movies.isEmpty()) View.VISIBLE else View.GONE
+                binding.rvFavoriteMovies.visibility =
+                    if (movies.isEmpty()) View.GONE else View.VISIBLE
             }
         }
     }

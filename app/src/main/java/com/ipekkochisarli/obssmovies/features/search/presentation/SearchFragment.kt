@@ -54,7 +54,17 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(FragmentSearchBinding
                 onMovieClick = { navigateToContentDetail(it.id) },
                 showFavoriteIcon = false,
             )
+
         binding.rvSearchList.adapter = adapter
+
+        adapter.addLoadStateListener { loadState ->
+            val isEmpty =
+                loadState.refresh is androidx.paging.LoadState.NotLoading &&
+                    adapter.itemCount == 0
+
+            binding.llEmptyList.visibleIf(isEmpty)
+            binding.rvSearchList.visibleIf(!isEmpty)
+        }
     }
 
     private fun setupRecyclerView() {

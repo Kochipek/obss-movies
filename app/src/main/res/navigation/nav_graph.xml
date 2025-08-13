@@ -112,14 +112,14 @@
         android:id="@+id/contentDetailFragment"
         android:name="com.ipekkochisarli.obssmovies.features.contentdetail.presentation.ContentDetailFragment"
         android:label="fragment_content_detail"
-        tools:layout="@layout/fragment_content_detail" >
+        tools:layout="@layout/fragment_content_detail">
         <action
             android:id="@+id/action_contentDetailFragment_to_libraryFragment"
             app:destination="@id/libraryFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -154,4 +154,8 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/castDetailFragment"
+        android:name="com.ipekkochisarli.obssmovies.features.cast.presentation.CastDetailFragment"
+        android:label="CastDetailFragment" />
 </navigation>

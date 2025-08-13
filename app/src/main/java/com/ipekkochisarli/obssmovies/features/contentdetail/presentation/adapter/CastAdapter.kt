@@ -1,18 +1,16 @@
 package com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
+import com.ipekkochisarli.obssmovies.databinding.ItemCastBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.CastUiModel
 import com.ipekkochisarli.obssmovies.util.extensions.loadImage
 
-class CastAdapter :
-    BaseListAdapter<CastUiModel>(
+class CastAdapter(
+    private val onCastClick: ((Int) -> Unit)? = null,
+) : BaseListAdapter<CastUiModel>(
         itemsSame = { old, new -> old.id == new.id },
         contentsSame = { old, new -> old == new },
     ) {
@@ -20,7 +18,10 @@ class CastAdapter :
         parent: ViewGroup,
         inflater: LayoutInflater,
         viewType: Int,
-    ): RecyclerView.ViewHolder = CastViewHolder(inflater.inflate(R.layout.item_cast, parent, false))
+    ): RecyclerView.ViewHolder {
+        val binding = ItemCastBinding.inflate(inflater, parent, false)
+        return CastViewHolder(binding, onCastClick)
+    }
 
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
@@ -31,14 +32,16 @@ class CastAdapter :
     }
 
     class CastViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
-        private val castImage: ImageView = itemView.findViewById(R.id.castImage)
-        private val castName: TextView = itemView.findViewById(R.id.castName)
-
+        private val binding: ItemCastBinding,
+        private val onCastClick: ((Int) -> Unit)?,
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(cast: CastUiModel) {
-            castImage.loadImage(cast.profileImageUrl)
-            castName.text = cast.name
+            binding.castImage.loadImage(cast.profileImageUrl)
+            binding.castName.text = cast.name
+
+            binding.root.setOnClickListener {
+                onCastClick?.invoke(cast.id)
+            }
         }
     }
 }

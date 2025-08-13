@@ -76,5 +76,6 @@
     <string name="an_error_occured">An Error Occured</string>
     <string name="dismiss">Dismiss</string>
     <string name="login_required_message">You need to log in to access your library. Please sign in to continue.</string>
+    <string name="no_movies_added">No Movies Added</string>
 
 </resources>

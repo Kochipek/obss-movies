@@ -17,10 +17,6 @@ sealed class AppError(
 
         object UserNotFound : AuthError("User not found")
 
-        data class AccountDisabled(
-            override val message: String,
-        ) : AuthError(message)
-
         data class UnknownAuthError(
             override val message: String,
         ) : AuthError(message)
@@ -38,10 +34,6 @@ sealed class AppError(
         ) : NetworkError(message)
 
         object Timeout : NetworkError("Request timed out.")
-
-        data class Unexpected(
-            override val message: String,
-        ) : NetworkError(message)
     }
 
     // Unknown

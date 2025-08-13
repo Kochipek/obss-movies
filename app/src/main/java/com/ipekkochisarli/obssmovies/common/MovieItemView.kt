@@ -4,14 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.appcompat.content.res.AppCompatResources
-import coil3.load
-import coil3.request.error
-import coil3.request.placeholder
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.databinding.ItemMoviesBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.util.extensions.gone
+import com.ipekkochisarli.obssmovies.util.extensions.loadImage
 import com.ipekkochisarli.obssmovies.util.extensions.visible
 
 enum class MovieViewType {
@@ -42,11 +39,7 @@ class MovieItemView
         }
 
         private fun loadPoster(url: String?) {
-            val placeholder = AppCompatResources.getDrawable(context, R.drawable.bg_placeholder)
-            binding.imagePoster.load(url) {
-                placeholder(placeholder)
-                error(placeholder)
-            }
+            binding.imagePoster.loadImage(url)
         }
 
         private fun updateFavoriteIcon(

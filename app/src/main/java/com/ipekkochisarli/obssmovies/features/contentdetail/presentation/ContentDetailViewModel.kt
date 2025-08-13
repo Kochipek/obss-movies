@@ -55,7 +55,7 @@ class ContentDetailViewModel
                                 DetailSectionType.SIMILAR_MOVIES,
                             )
                         sections.forEach { section ->
-                            launch { loadSection(movieId, section) }
+                            loadSection(movieId, section)
                         }
                     }
 
@@ -63,7 +63,6 @@ class ContentDetailViewModel
                         _uiState.update { it.copy(message = detailResult.exception.message) }
                     }
                 }
-
                 _uiState.update { it.copy(isLoading = false) }
             }
         }

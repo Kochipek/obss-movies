@@ -63,7 +63,7 @@ class LoginViewModel
             email: String,
             password: String,
         ) = viewModelScope.launch {
-            _authState.update { it.copy(isLoading = true, errorMessage = null) }
+            _authState.update { it.copy(isLoading = true) }
             when (val result = loginUserUseCase(email, password)) {
                 is ApiResult.Success -> {
                     saveLoginPreferences(email, _authState.value.isRememberMeEnabled)

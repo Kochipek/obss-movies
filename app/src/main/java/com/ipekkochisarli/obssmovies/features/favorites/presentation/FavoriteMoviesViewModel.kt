@@ -2,6 +2,7 @@ package com.ipekkochisarli.obssmovies.features.favorites.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ipekkochisarli.obssmovies.core.data.PreferencesManager
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.FavoriteMovieUiModel
 import com.ipekkochisarli.obssmovies.features.favorites.domain.uimodel.LibraryCategoryType

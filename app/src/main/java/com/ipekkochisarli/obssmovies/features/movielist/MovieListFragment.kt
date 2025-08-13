@@ -7,6 +7,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ipekkochisarli.obssmovies.R
+import com.ipekkochisarli.obssmovies.common.CustomLoadingDialog
+import com.ipekkochisarli.obssmovies.common.ErrorDialog
 import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentMovieListBinding
@@ -32,6 +34,10 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieLi
     private lateinit var movieAdapter: MovieListAdapter
     private var data: MovieListFragmentData? = null
 
+    private val loadingDialog: CustomLoadingDialog by lazy {
+        CustomLoadingDialog(requireContext())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -50,7 +56,16 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieLi
             MovieListAdapter(
                 viewType = MovieViewType.LIST,
                 onMovieClick = { navigateToContentDetail(it.id) },
-                onFavoriteClick = { viewModel.toggleWatchlist(it.id) },
+                onFavoriteClick = { movie ->
+                    if (viewModel.isGuest) {
+                        ErrorDialog.show(
+                            parentFragmentManager,
+                            getString(R.string.login_required_message),
+                        )
+                    } else {
+                        viewModel.toggleWatchlist(movie.id)
+                    }
+                },
                 showFavoriteIcon = true,
             )
 
@@ -67,6 +82,7 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieLi
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { uiState ->
+                loadingDialog.showLoading(uiState.isLoading)
                 binding.recyclerViewFullMovieList.updateLayoutManagerWithState(
                     uiState.viewType,
                     binding.buttonToggleView,

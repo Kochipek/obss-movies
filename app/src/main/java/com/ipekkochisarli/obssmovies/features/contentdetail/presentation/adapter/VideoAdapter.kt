@@ -8,6 +8,7 @@ import coil3.request.crossfade
 import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
 import com.ipekkochisarli.obssmovies.databinding.ItemVideoBinding
 import com.ipekkochisarli.obssmovies.features.contentdetail.domain.VideoUiModel
+import com.ipekkochisarli.obssmovies.util.extensions.loadImage
 
 class VideoAdapter(
     private val onVideoClicked: ((videoKey: String) -> Unit)? = null,
@@ -37,9 +38,7 @@ class VideoAdapter(
         private val onVideoClicked: ((videoKey: String) -> Unit)?,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(video: VideoUiModel) {
-            binding.videoThumbnail.load(video.thumbnailUrl) {
-                crossfade(true)
-            }
+            binding.videoThumbnail.loadImage(video.thumbnailUrl)
             binding.videoName.text = video.name
 
             binding.root.setOnClickListener {

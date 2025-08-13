@@ -11,6 +11,7 @@ import coil3.request.crossfade
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
+import com.ipekkochisarli.obssmovies.util.extensions.loadImage
 
 class SimilarMoviesAdapter(
     private val onItemClick: ((MovieUiModel) -> Unit)? = null,
@@ -43,9 +44,7 @@ class SimilarMoviesAdapter(
         private val title: TextView = itemView.findViewById(R.id.movieTitle)
 
         fun bind(movie: MovieUiModel) {
-            poster.load(movie.posterUrl) {
-                crossfade(true)
-            }
+            poster.loadImage(movie.posterUrl)
             title.text = movie.title
         }
     }

@@ -1,15 +1,13 @@
 package com.ipekkochisarli.obssmovies.features.home.domain
 
-import androidx.paging.PagingData
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetMovieListBySectionUseCase
+class GetMoviesUseCase
     @Inject
     constructor(
         private val movieRepository: MovieRepository,
     ) {
-        operator fun invoke(section: HomeSectionType): Flow<PagingData<MovieUiModel>> = movieRepository.getMovieListBySection(section)
+        suspend operator fun invoke(section: HomeSectionType): ApiResult<List<MovieUiModel>> = movieRepository.getMovies(section)
     }

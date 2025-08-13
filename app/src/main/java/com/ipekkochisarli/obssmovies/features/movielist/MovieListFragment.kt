@@ -6,16 +6,14 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.common.CustomLoadingDialog
-import com.ipekkochisarli.obssmovies.common.ErrorDialog
 import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentMovieListBinding
-import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
-import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
+import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
-import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
 import com.ipekkochisarli.obssmovies.util.extensions.updateLayoutManagerWithState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -25,85 +23,84 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class MovieListFragmentData(
     val header: String,
-    val movieList: List<MovieUiModel>,
+    val viewType: MovieViewType = MovieViewType.LIST,
 ) : Parcelable
 
 @AndroidEntryPoint
 class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieListBinding::inflate) {
     private val viewModel: MovieListViewModel by viewModels()
-    private lateinit var movieAdapter: MovieListAdapter
-    private var data: MovieListFragmentData? = null
+    private lateinit var movieAdapter: MoviePagingAdapter
+    private var sectionType: HomeSectionType? = null
 
-    private val loadingDialog: CustomLoadingDialog by lazy {
-        CustomLoadingDialog(requireContext())
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            data = it.getParcelable(MOVIE_LIST_DATA)
-        }
-    }
+    private val loadingDialog: CustomLoadingDialog by lazy { CustomLoadingDialog(requireContext()) }
 
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.setMovieList(data?.movieList.orEmpty())
 
-        movieAdapter =
-            MovieListAdapter(
-                viewType = MovieViewType.LIST,
-                onMovieClick = { navigateToContentDetail(it.id) },
-                onFavoriteClick = { movie ->
-                    if (viewModel.isGuest) {
-                        ErrorDialog.show(
-                            parentFragmentManager,
-                            getString(R.string.login_required_message),
-                        )
-                    } else {
-                        viewModel.toggleWatchlist(movie.id)
-                    }
-                },
-                showFavoriteIcon = true,
-            )
-
-        binding.tvHeader.text = data?.header.orEmpty()
-        setupRecyclerView()
-
-        binding.ivBack.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
+        arguments?.let {
+            sectionType = it.getSerializable("sectionType") as? HomeSectionType
         }
 
-        observeViewModel()
+        setupAdapter()
+        setupRecyclerView()
+        setupNavigation()
+        observeUiState()
+        observeMovies()
     }
 
-    private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collectLatest { uiState ->
-                loadingDialog.showLoading(uiState.isLoading)
-                binding.recyclerViewFullMovieList.updateLayoutManagerWithState(
-                    uiState.viewType,
-                    binding.buttonToggleView,
-                )
-                movieAdapter.setViewType(uiState.viewType)
-                movieAdapter.submitList(uiState.results)
-            }
-        }
+    private fun setupAdapter() {
+        movieAdapter =
+            MoviePagingAdapter(
+                viewType = viewModel.uiState.value.viewType,
+                onMovieClick = { navigateToContentDetail(it.id) },
+            )
+        binding.recyclerViewFullMovieList.adapter = movieAdapter
     }
 
     private fun setupRecyclerView() {
         binding.recyclerViewFullMovieList.apply {
-            adapter = movieAdapter
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
         }
-        setupToggleButton()
-    }
 
-    private fun setupToggleButton() {
         binding.buttonToggleView.setOnClickListener {
             viewModel.toggleViewType()
+        }
+    }
+
+    private fun observeUiState() {
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                loadingDialog.showLoading(state.isLoading)
+                updateViewType(state.viewType)
+            }
+        }
+    }
+
+    private fun observeMovies() {
+        sectionType?.let { type ->
+            lifecycleScope.launch {
+                viewModel.getMovies(type).collectLatest { pagingData ->
+                    movieAdapter.submitData(pagingData)
+                }
+            }
+        }
+    }
+
+    private fun updateViewType(viewType: MovieViewType) {
+        binding.recyclerViewFullMovieList.updateLayoutManagerWithState(
+            viewType,
+            binding.buttonToggleView,
+        )
+        movieAdapter.setViewType(viewType)
+    }
+
+    private fun setupNavigation() {
+        binding.ivBack.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 

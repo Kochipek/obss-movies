@@ -42,10 +42,6 @@ class MovieListAdapter(
         }
     }
 
-    fun setViewType(type: MovieViewType) {
-        viewType = type
-    }
-
     inner class MovieViewHolder(
         val movieItemView: MovieItemView,
     ) : RecyclerView.ViewHolder(movieItemView)

@@ -11,7 +11,7 @@ import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.AddFavori
 import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.GetFavoriteMoviesUseCase
 import com.ipekkochisarli.obssmovies.features.favorites.domain.usecase.RemoveFavoriteMovieUseCase
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
-import com.ipekkochisarli.obssmovies.features.home.domain.GetMovieListBySectionUseCase
+import com.ipekkochisarli.obssmovies.features.home.domain.GetMoviesUseCase
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class HomeViewModel
     @Inject
     constructor(
-        private val getMovieListBySectionUseCase: GetMovieListBySectionUseCase,
+        private val getMovieListBySectionUseCase: GetMoviesUseCase,
         private val preferencesManager: PreferencesManager,
         private val removeFavoriteMovieUseCase: RemoveFavoriteMovieUseCase,
         private val addFavoriteMovieUseCase: AddFavoriteMovieUseCase,

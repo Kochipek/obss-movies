@@ -141,21 +141,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun onSeeAllClicked(sectionType: HomeSectionType) {
-        val section = viewModel.uiStates.value.find { it.type == sectionType }
-        val header = getString(sectionType.titleRes)
-
-        val moviesList = section?.movies ?: emptyList()
-        val data =
-            MovieListFragmentData(
-                header = header,
-                movieList = moviesList,
-            )
-
         val bundle =
             Bundle().apply {
-                putParcelable(MOVIE_LIST_DATA, data)
+                putSerializable("sectionType", sectionType)
             }
-
         findNavController().navigate(
             R.id.action_homeFragment_to_movieListFragment,
             bundle,

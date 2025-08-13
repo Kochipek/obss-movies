@@ -1,5 +1,10 @@
 package com.ipekkochisarli.obssmovies.features.home.data
 
+import android.graphics.Movie
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.ipekkochisarli.obssmovies.core.data.paging.MoviePagingSource
 import com.ipekkochisarli.obssmovies.core.network.ApiResult
 import com.ipekkochisarli.obssmovies.core.network.safeApiCall
 import com.ipekkochisarli.obssmovies.features.contentdetail.DetailSectionType
@@ -11,6 +16,7 @@ import com.ipekkochisarli.obssmovies.features.home.data.remote.dto.toDomain
 import com.ipekkochisarli.obssmovies.features.home.data.remote.service.MovieApiService
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieRepository
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MovieRepositoryImpl
@@ -18,7 +24,13 @@ class MovieRepositoryImpl
     constructor(
         private val movieApiService: MovieApiService,
     ) : MovieRepository {
-        override suspend fun getMovieListBySection(section: HomeSectionType): ApiResult<List<MovieUiModel>> {
+        override fun getMovieListBySection(section: HomeSectionType): Flow<PagingData<MovieUiModel>> =
+            Pager(
+                config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+                pagingSourceFactory = { MoviePagingSource(movieApiService, section.endpoint) },
+            ).flow
+
+        override suspend fun getMovies(section: HomeSectionType): ApiResult<List<MovieUiModel>> {
             val apiResult =
                 safeApiCall {
                     movieApiService.getMovies(endpoint = section.endpoint, page = 1)
@@ -37,23 +49,17 @@ class MovieRepositoryImpl
             }
         }
 
-        override suspend fun searchMovie(query: String): ApiResult<List<MovieUiModel>> {
-            val apiResult =
-                safeApiCall {
-                    movieApiService.searchMovie(query = query, page = 1)
-                }
-            return when (apiResult) {
-                is ApiResult.Success -> {
-                    val movies =
-                        apiResult.data.results
-                            ?.mapNotNull { it?.toDomain() }
-                            ?: emptyList()
-                    ApiResult.Success(movies)
-                }
-
-                is ApiResult.Error -> ApiResult.Error(apiResult.exception)
-            }
-        }
+        override fun searchMovie(query: String): Flow<PagingData<MovieUiModel>> =
+            Pager(
+                config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+                pagingSourceFactory = {
+                    MoviePagingSource(
+                        movieApiService,
+                        sectionEndpoint = "",
+                        query = query,
+                    )
+                },
+            ).flow
 
         override suspend fun getMovieDetail(movieId: Int): ApiResult<ContentDetailUiModel> {
             val apiResult = safeApiCall { movieApiService.getMovieDetail(movieId) }

@@ -36,7 +36,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:padding="2dp"
-            tools:src="@drawable/ic_grid" />
+            android:src="@drawable/ic_grid" />
     </LinearLayout>
 
 

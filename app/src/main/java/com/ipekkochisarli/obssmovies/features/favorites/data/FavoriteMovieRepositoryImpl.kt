@@ -41,12 +41,4 @@ class FavoriteRepositoryImpl
             } catch (e: Exception) {
                 ApiResult.Error(AppError.fromException(e))
             }
-
-        override suspend fun isFavorite(
-            movieId: Int,
-            listType: LibraryCategoryType,
-        ): Boolean {
-            val userId = authRepository.getCurrentUserId() ?: return false
-            return dao.isFavorite(movieId, userId)
-        }
     }

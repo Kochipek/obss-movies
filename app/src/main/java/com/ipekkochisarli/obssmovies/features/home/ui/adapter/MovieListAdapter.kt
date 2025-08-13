@@ -11,6 +11,8 @@ import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 class MovieListAdapter(
     private var viewType: MovieViewType = MovieViewType.LIST,
     private val onMovieClick: ((MovieUiModel) -> Unit)? = null,
+    private val onFavoriteClick: ((MovieUiModel) -> Unit)? = null,
+    private val showFavoriteIcon: Boolean = false,
 ) : BaseListAdapter<MovieUiModel>(
         itemsSame = { old, new -> old.id == new.id },
         contentsSame = { old, new -> old == new },
@@ -19,9 +21,9 @@ class MovieListAdapter(
         parent: ViewGroup,
         inflater: LayoutInflater,
         viewType: Int,
-    ): MovieViewHolder {
-        val view = MovieItemView(parent.context)
-        return MovieViewHolder(view)
+    ): RecyclerView.ViewHolder {
+        val movieItemView = MovieItemView(parent.context)
+        return MovieViewHolder(movieItemView)
     }
 
     override fun onBindViewHolder(
@@ -29,21 +31,22 @@ class MovieListAdapter(
         position: Int,
     ) {
         val movie = getItem(position)
-        (holder as MovieViewHolder).movieItemView.bind(movie, viewType)
-
+        (holder as MovieViewHolder).movieItemView.bind(
+            movie,
+            viewType,
+            onFavoriteClick = { onFavoriteClick?.invoke(it) },
+            showFavoriteIcon = showFavoriteIcon,
+        )
         holder.itemView.setOnClickListener {
             onMovieClick?.invoke(movie)
         }
     }
 
+    fun setViewType(type: MovieViewType) {
+        viewType = type
+    }
+
     inner class MovieViewHolder(
         val movieItemView: MovieItemView,
     ) : RecyclerView.ViewHolder(movieItemView)
-
-    fun setViewType(type: MovieViewType) {
-        if (viewType != type) {
-            viewType = type
-            notifyItemRangeChanged(0, itemCount)
-        }
-    }
 }

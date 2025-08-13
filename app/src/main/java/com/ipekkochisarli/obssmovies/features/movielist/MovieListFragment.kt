@@ -5,15 +5,16 @@ import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.common.MovieViewType
 import com.ipekkochisarli.obssmovies.core.base.BaseFragment
 import com.ipekkochisarli.obssmovies.databinding.FragmentMovieListBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.MovieListAdapter
+import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
+import com.ipekkochisarli.obssmovies.util.extensions.updateLayoutManagerWithState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -28,9 +29,7 @@ data class MovieListFragmentData(
 @AndroidEntryPoint
 class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieListBinding::inflate) {
     private val viewModel: MovieListViewModel by viewModels()
-
     private lateinit var movieAdapter: MovieListAdapter
-
     private var data: MovieListFragmentData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,16 +44,18 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieLi
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setMovieList(data?.movieList.orEmpty())
 
         movieAdapter =
             MovieListAdapter(
                 viewType = MovieViewType.LIST,
+                onMovieClick = { navigateToContentDetail(it.id) },
+                onFavoriteClick = { viewModel.toggleWatchlist(it.id) },
+                showFavoriteIcon = true,
             )
 
         binding.tvHeader.text = data?.header.orEmpty()
-
         setupRecyclerView()
-        movieAdapter.submitList(data?.movieList.orEmpty())
 
         binding.ivBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
@@ -66,22 +67,12 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieLi
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { uiState ->
-                when (uiState.viewType) {
-                    MovieViewType.LIST -> {
-                        binding.recyclerViewFullMovieList.layoutManager =
-                            LinearLayoutManager(requireContext())
-                        binding.buttonToggleView.setImageResource(R.drawable.ic_grid)
-                    }
-
-                    MovieViewType.GRID -> {
-                        binding.recyclerViewFullMovieList.layoutManager =
-                            GridLayoutManager(requireContext(), 3)
-                        binding.buttonToggleView.setImageResource(R.drawable.ic_list)
-                    }
-
-                    MovieViewType.POSTER -> {}
-                }
+                binding.recyclerViewFullMovieList.updateLayoutManagerWithState(
+                    uiState.viewType,
+                    binding.buttonToggleView,
+                )
                 movieAdapter.setViewType(uiState.viewType)
+                movieAdapter.submitList(uiState.results)
             }
         }
     }
@@ -98,5 +89,12 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(FragmentMovieLi
         binding.buttonToggleView.setOnClickListener {
             viewModel.toggleViewType()
         }
+    }
+
+    private fun navigateToContentDetail(movieId: Int) {
+        findNavController().navigate(
+            R.id.action_movieListFragment_to_contentDetailFragment,
+            Bundle().apply { putInt(MOVIE_ID, movieId) },
+        )
     }
 }

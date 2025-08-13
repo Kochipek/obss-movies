@@ -58,7 +58,7 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
             navigateToMovieDetail(movie.id)
         }
         adapter.onWatchLaterClicked = {
-            viewModel.toggleWatchLater()
+            viewModel.toggleFavoriteStatus(LibraryCategoryType.WATCH_LATER)
             viewModel.uiState.value.detail?.let { detail ->
                 showListActionMessage(
                     detail.title,
@@ -70,7 +70,7 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
         }
 
         adapter.onWatchedClicked = {
-            viewModel.toggleWatched()
+            viewModel.toggleFavoriteStatus(LibraryCategoryType.WATCHED)
             viewModel.uiState.value.detail?.let { detail ->
                 showListActionMessage(
                     detail.title,

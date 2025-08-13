@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.palette.ktx)
     ksp(libs.hilt.android.compiler)
 
     // navigation

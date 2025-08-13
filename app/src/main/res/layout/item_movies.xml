@@ -2,9 +2,9 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:layout_margin="8dp"
     android:gravity="center"
-    android:layout_margin="8dp">
+    android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
         android:layout_width="100dp"
@@ -18,6 +18,19 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/image_poster"
             android:scaleType="centerCrop" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageFavorite"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end|top"
+            android:background="@drawable/bg_circle_dark"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_tick" />
+
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
@@ -42,8 +55,8 @@
             android:id="@+id/textSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="3"
             android:textColor="#B0B0B0"

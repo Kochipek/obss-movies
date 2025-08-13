@@ -1,6 +1,5 @@
 package com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter.viewholder
 
-import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import coil3.request.crossfade
@@ -22,6 +21,10 @@ class HeaderViewHolder(
         val context = root.context
 
         posterImage.load(detail.posterUrl) {
+            crossfade(true)
+        }
+
+        backgroundPosterImage.load(detail.backdropUrl) {
             crossfade(true)
         }
 
@@ -53,7 +56,6 @@ class HeaderViewHolder(
             if (isWatched) R.drawable.ic_eye_closed else R.drawable.ic_eye_open,
         )
 
-        // Butonlara click listener ata
         btnWatchLater.setOnClickListener {
             onWatchLaterClicked?.invoke()
         }

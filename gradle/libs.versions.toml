@@ -30,6 +30,7 @@ pagingRuntimeKtx = "3.3.6"
 navigationFragment = "2.8.9"
 firebaseAuthKtx = "24.0.0"
 roomRuntime = "2.7.2"
+paletteKtx = "1.0.0"
 
 
 [libraries]
@@ -71,6 +72,7 @@ androidx-navigation-fragment = { group = "androidx.navigation", name = "navigati
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-palette-ktx = { group = "androidx.palette", name = "palette-ktx", version.ref = "paletteKtx" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

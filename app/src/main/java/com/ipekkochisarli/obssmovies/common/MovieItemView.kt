@@ -4,7 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.appcompat.content.res.AppCompatResources
 import coil3.load
+import coil3.request.error
+import coil3.request.placeholder
+import com.ipekkochisarli.obssmovies.R
 import com.ipekkochisarli.obssmovies.databinding.ItemMoviesBinding
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.util.extensions.gone
@@ -29,9 +33,42 @@ class MovieItemView
         fun bind(
             movie: MovieUiModel,
             viewType: MovieViewType,
+            showFavoriteIcon: Boolean = true,
+            onFavoriteClick: ((MovieUiModel) -> Unit)? = null,
         ) {
-            binding.imagePoster.load(movie.posterUrl)
+            loadPoster(movie.posterUrl)
+            updateFavoriteIcon(movie.isAddedWatchLater, showFavoriteIcon, movie, onFavoriteClick)
+            updateTextViews(movie, viewType)
+        }
 
+        private fun loadPoster(url: String?) {
+            val placeholder = AppCompatResources.getDrawable(context, R.drawable.bg_placeholder)
+            binding.imagePoster.load(url) {
+                placeholder(placeholder)
+                error(placeholder)
+            }
+        }
+
+        private fun updateFavoriteIcon(
+            isAdded: Boolean,
+            show: Boolean,
+            movie: MovieUiModel,
+            onClick: ((MovieUiModel) -> Unit)?,
+        ) {
+            if (!show) {
+                binding.imageFavorite.gone()
+                return
+            }
+
+            binding.imageFavorite.visible()
+            binding.imageFavorite.setImageResource(if (isAdded) R.drawable.ic_tick else R.drawable.ic_plus)
+            binding.imageFavorite.setOnClickListener { onClick?.invoke(movie) }
+        }
+
+        private fun updateTextViews(
+            movie: MovieUiModel,
+            viewType: MovieViewType,
+        ) {
             when (viewType) {
                 MovieViewType.LIST -> {
                     binding.textTitle.visible()
@@ -39,10 +76,12 @@ class MovieItemView
                     binding.textTitle.text = movie.title
                     binding.textSubtitle.text = movie.description
                 }
+
                 MovieViewType.GRID -> {
                     binding.textTitle.gone()
                     binding.textSubtitle.gone()
                 }
+
                 MovieViewType.POSTER -> {
                     binding.textTitle.gone()
                     binding.textSubtitle.gone()

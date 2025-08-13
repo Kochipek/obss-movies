@@ -13,9 +13,4 @@ interface FavoriteRepository {
     )
 
     suspend fun getFavoritesByListType(listType: LibraryCategoryType): ApiResult<List<FavoriteMovieUiModel>>
-
-    suspend fun isFavorite(
-        movieId: Int,
-        listType: LibraryCategoryType,
-    ): Boolean
 }

@@ -46,11 +46,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun setupRecyclerView() {
         categoryAdapter =
             CategorySectionAdapter(
+                showFavoriteIcon = true,
                 onSeeAllClick = { sectionType ->
                     onSeeAllClicked(sectionType)
                 },
                 onMovieClick = { movie ->
                     navigateToContentDetail(movie.id)
+                },
+                onFavoriteClick = { movie ->
+                    viewModel.toggleWatchlist(movie.id)
                 },
             )
         binding.recyclerViewSections.apply {

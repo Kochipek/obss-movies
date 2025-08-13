@@ -5,42 +5,57 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ipekkochisarli.obssmovies.common.MovieViewType
-import com.ipekkochisarli.obssmovies.core.base.BaseListAdapter
 import com.ipekkochisarli.obssmovies.databinding.ItemHomeCategorySectionBinding
 import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 import com.ipekkochisarli.obssmovies.features.home.domain.MovieUiModel
 import com.ipekkochisarli.obssmovies.features.home.ui.HomeUiState
 
 class CategorySectionAdapter(
+    private val showFavoriteIcon: Boolean = false,
+    private val onFavoriteClick: ((MovieUiModel) -> Unit)? = null,
     private val onSeeAllClick: ((HomeSectionType) -> Unit)? = null,
     private val onMovieClick: ((MovieUiModel) -> Unit)? = null,
-) : BaseListAdapter<HomeUiState>(
-        itemsSame = { old, new -> old.type == new.type },
-        contentsSame = { old, new -> old == new },
-    ) {
+) : RecyclerView.Adapter<CategorySectionAdapter.SectionViewHolder>() {
+    private val sections = mutableListOf<HomeUiState>()
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        inflater: LayoutInflater,
         viewType: Int,
     ): SectionViewHolder {
-        val binding = ItemHomeCategorySectionBinding.inflate(inflater, parent, false)
+        val binding =
+            ItemHomeCategorySectionBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
         return SectionViewHolder(binding)
     }
 
     override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
+        holder: SectionViewHolder,
         position: Int,
     ) {
-        (holder as SectionViewHolder).bind(getItem(position))
+        holder.bind(sections[position])
+    }
+
+    override fun getItemCount(): Int = sections.size
+
+    fun submitList(newSections: List<HomeUiState>) {
+        sections.clear()
+        sections.addAll(newSections)
+        notifyDataSetChanged()
     }
 
     inner class SectionViewHolder(
         private val binding: ItemHomeCategorySectionBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         private val movieAdapter =
-            MovieListAdapter(MovieViewType.POSTER) { movie ->
-                onMovieClick?.invoke(movie)
-            }
+            MovieListAdapter(
+                viewType = MovieViewType.POSTER,
+                showFavoriteIcon = showFavoriteIcon,
+                onFavoriteClick = onFavoriteClick,
+                onMovieClick = onMovieClick,
+            )
 
         init {
             binding.recyclerViewMoviesHorizontal.apply {

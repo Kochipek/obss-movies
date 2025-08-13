@@ -14,4 +14,5 @@ data class MovieUiModel(
     val carouselUrl: String? = null,
     val description: String? = null,
     val viewType: MovieViewType? = null,
+    val isAddedWatchLater: Boolean = false,
 ) : Parcelable

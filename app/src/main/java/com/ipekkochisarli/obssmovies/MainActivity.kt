@@ -1,5 +1,6 @@
 package com.ipekkochisarli.obssmovies
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -31,13 +32,13 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        binding.bottomNav.setOnApplyWindowInsetsListener { view, insets ->
+        binding.bottomNav?.setOnApplyWindowInsetsListener { view, insets ->
             view.updatePadding(0, 0, 0, 0)
             insets
         }
@@ -45,15 +46,27 @@ class MainActivity : AppCompatActivity() {
         navController =
             (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment).navController
 
-        binding.bottomNav.setupWithNavController(navController)
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        binding.bottomNav.setOnItemReselectedListener { }
+        if (isLandscape) {
+            binding.bottomNav?.gone()
+            binding.navigationRail?.visible()
+            binding.navigationRail?.setupWithNavController(navController)
+        } else {
+            binding.bottomNav?.visible()
+            binding.navigationRail?.gone()
+            binding.bottomNav?.setupWithNavController(navController)
+        }
+
+        binding.bottomNav?.setOnItemReselectedListener { }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id in showBottomNavigationIds) {
-                binding.bottomNav.visible()
+                binding.bottomNav?.visible()
+                binding.navigationRail?.visible()
             } else {
-                binding.bottomNav.gone()
+                binding.bottomNav?.gone()
+                binding.navigationRail?.gone()
             }
         }
     }

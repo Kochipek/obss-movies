@@ -1,6 +1,7 @@
 package com.ipekkochisarli.obssmovies.features.home.data.remote.service
 
 import com.ipekkochisarli.obssmovies.BuildConfig.API_KEY
+import com.ipekkochisarli.obssmovies.features.cast.data.CastDetailDto
 import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.CreditsDto
 import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.MovieDetailDto
 import com.ipekkochisarli.obssmovies.features.contentdetail.data.dto.VideosDto
@@ -51,6 +52,13 @@ interface MovieApiService {
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<MovieResponse>
+
+    @GET("person/{person_id}")
+    suspend fun getCastDetail(
+        @Path("person_id") castId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en-US",
+    ): CastDetailDto
 
     companion object {
         const val LANGUAGE = "en-US"

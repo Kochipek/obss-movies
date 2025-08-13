@@ -62,6 +62,9 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
         adapter.onSimilarMovieClick = { movie ->
             navigateToMovieDetail(movie.id)
         }
+        adapter.onCastClick = { castId ->
+            navigateToCastDetailScreen(castId)
+        }
         adapter.onWatchLaterClicked = {
             viewModel.toggleFavoriteStatus(LibraryCategoryType.WATCH_LATER)
             viewModel.uiState.value.detail?.let { detail ->
@@ -123,6 +126,11 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(Fragmen
     private fun navigateToMovieDetail(movieId: Int) {
         val bundle = Bundle().apply { putInt(MOVIE_ID, movieId) }
         findNavController().navigate(R.id.contentDetailFragment, bundle)
+    }
+
+    private fun navigateToCastDetailScreen(castId: Int) {
+        val bundle = Bundle().apply { putInt("castId", castId) }
+        findNavController().navigate(R.id.castDetailFragment, bundle)
     }
 
     private fun showListActionMessage(

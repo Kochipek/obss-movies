@@ -17,9 +17,7 @@ import com.ipekkochisarli.obssmovies.features.home.HomeSectionType
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CarouselPagerAdapter
 import com.ipekkochisarli.obssmovies.features.home.ui.adapter.CategorySectionAdapter
 import com.ipekkochisarli.obssmovies.features.home.ui.mapper.toCarouselItems
-import com.ipekkochisarli.obssmovies.features.movielist.MovieListFragmentData
 import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_ID
-import com.ipekkochisarli.obssmovies.util.Constants.MOVIE_LIST_DATA
 import com.ipekkochisarli.obssmovies.util.extensions.gone
 import com.ipekkochisarli.obssmovies.util.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint

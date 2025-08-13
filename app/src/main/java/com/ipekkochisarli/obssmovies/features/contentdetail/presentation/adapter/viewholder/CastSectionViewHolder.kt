@@ -9,8 +9,9 @@ import com.ipekkochisarli.obssmovies.features.contentdetail.presentation.adapter
 
 class CastSectionViewHolder(
     private val binding: ItemContentDetailSectionBinding,
+    private val onCastClick: ((Int) -> Unit)? = null,
 ) : RecyclerView.ViewHolder(binding.root) {
-    private val adapter = CastAdapter()
+    private val adapter = CastAdapter(onCastClick)
 
     init {
         binding.recyclerView.layoutManager =

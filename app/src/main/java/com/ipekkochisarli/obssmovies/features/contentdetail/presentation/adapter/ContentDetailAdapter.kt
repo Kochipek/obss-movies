@@ -38,6 +38,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var onShareClicked: ((String) -> Unit)? = null
     var onVideoClicked: ((String) -> Unit)? = null
     var onSimilarMovieClick: ((MovieUiModel) -> Unit)? = null
+    var onCastClick: ((Int) -> Unit)? = null
 
     var onWatchLaterClicked: (() -> Unit)? = null
     var onWatchedClicked: (() -> Unit)? = null
@@ -96,7 +97,7 @@ class ContentDetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         parent,
                         false,
                     )
-                CastSectionViewHolder(binding)
+                CastSectionViewHolder(binding, onCastClick)
             }
 
             TYPE_VIDEOS -> {

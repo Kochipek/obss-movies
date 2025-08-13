@@ -15,7 +15,11 @@ fun RecyclerView.updateLayoutManagerWithState(
     layoutManager =
         when (viewType) {
             MovieViewType.LIST -> LinearLayoutManager(context)
-            MovieViewType.GRID -> GridLayoutManager(context, 3)
+            MovieViewType.GRID -> {
+                val spanCount = calculateSpanCount()
+                GridLayoutManager(context, spanCount)
+            }
+
             else -> LinearLayoutManager(context)
         }
 
@@ -24,4 +28,14 @@ fun RecyclerView.updateLayoutManagerWithState(
     toggleButton.setImageResource(
         if (viewType == MovieViewType.LIST) R.drawable.ic_grid else R.drawable.ic_list,
     )
+}
+
+private fun RecyclerView.calculateSpanCount(): Int {
+    val displayMetrics = context.resources.displayMetrics
+    val screenWidthPx = displayMetrics.widthPixels
+    val density = displayMetrics.density
+    val itemWidthDp = 100
+    val itemWidthPx = (itemWidthDp * density).toInt()
+
+    return maxOf(1, screenWidthPx / itemWidthPx)
 }

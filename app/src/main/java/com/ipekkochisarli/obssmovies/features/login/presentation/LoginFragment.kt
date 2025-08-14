@@ -76,7 +76,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             googleAuthClient.signIn()
         }
 
-        observeViewModel()
         setupClickListeners()
         observeViewModel()
         updateUiForMode()
@@ -96,9 +95,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             }
             checkboxRememberMe.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.setRememberMeChecked(isChecked)
-            }
-            etEmail.doAfterTextChanged { text ->
-                viewModel.onEmailChanged(text.toString())
             }
         }
 
@@ -121,40 +117,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 tvForgotPassword.gone()
             }
         }
-
-    private fun onLoginClicked() {
-        val email =
-            binding.etEmail.text
-                .toString()
-                .trim()
-        val password =
-            binding.etPassword.text
-                .toString()
-                .trim()
-
-        if (!validateLoginFields(email, password)) return
-
-        viewModel.loginUser(email, password)
-    }
-
-    private fun onRegisterClicked() {
-        val email =
-            binding.etEmail.text
-                .toString()
-                .trim()
-        val password =
-            binding.etPassword.text
-                .toString()
-                .trim()
-        val username =
-            binding.etUsername.text
-                .toString()
-                .trim()
-
-        if (!validateRegisterFields(email, password, username)) return
-
-        viewModel.registerUser(email, password, username)
-    }
 
     private fun validateLoginFields(
         email: String,
@@ -180,31 +142,54 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.authState.collectLatest { state ->
-
                 loadingDialog.showLoading(state.isLoading)
 
-                if (state.errorMessage != null) {
-                    ErrorDialog.show(parentFragmentManager, state.errorMessage)
-                }
-
                 binding.checkboxRememberMe.isChecked = state.isRememberMeEnabled
-                if (binding.etEmail.text.toString() != state.savedEmail) {
-                    binding.etEmail.setText(state.savedEmail)
+
+                if (state.isUserLoggedIn) navigateToHome()
+                if (state.isUserSignedUp) {
+                    isLoginMode = true
+                    updateUiForMode()
+                    showToast(getString(R.string.register_success))
                 }
-
-                when {
-                    state.isUserLoggedIn -> navigateToHome()
-                    state.isUserSignedUp -> {
-                        isLoginMode = true
-                        updateUiForMode()
-                        showToast(getString(R.string.register_success))
-                    }
-
-                    state.isEmailAlreadyExists -> showToast(getString(R.string.email_already_exists))
-                    else -> state.errorMessage?.let { showToast(it) }
+                if (state.isEmailAlreadyExists) showToast(getString(R.string.email_already_exists))
+                if (!state.isLoading && state.errorMessage != null) {
+                    ErrorDialog.show(parentFragmentManager, state.errorMessage)
                 }
             }
         }
+    }
+
+    private fun onLoginClicked() {
+        val email =
+            binding.etEmail.text
+                .toString()
+                .trim()
+        val password =
+            binding.etPassword.text
+                .toString()
+                .trim()
+
+        if (!validateLoginFields(email, password)) return
+        viewModel.loginUser(email, password)
+    }
+
+    private fun onRegisterClicked() {
+        val email =
+            binding.etEmail.text
+                .toString()
+                .trim()
+        val password =
+            binding.etPassword.text
+                .toString()
+                .trim()
+        val username =
+            binding.etUsername.text
+                .toString()
+                .trim()
+
+        if (!validateRegisterFields(email, password, username)) return
+        viewModel.registerUser(email, password, username)
     }
 
     private fun navigateToHome() {

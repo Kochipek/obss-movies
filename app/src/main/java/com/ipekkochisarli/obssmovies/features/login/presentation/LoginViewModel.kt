@@ -44,10 +44,6 @@ class LoginViewModel
             _authState.update { it.copy(isRememberMeEnabled = checked) }
         }
 
-        fun onEmailChanged(email: String) {
-            _authState.update { it.copy(savedEmail = email) }
-        }
-
         fun shouldAutoLogin(): Boolean = preferencesManager.isRememberMeEnabled() && preferencesManager.isUserLoggedIn()
 
         private fun saveLoginPreferences(
